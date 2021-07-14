@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_security_acl">
+    <sys_security_acl action="DELETE">
+        <active>true</active>
+        <admin_overrides>true</admin_overrides>
+        <advanced>false</advanced>
+        <condition/>
+        <description>Default access control on x_hpmms_hp_daas_co_hp_consumable_inbound</description>
+        <name>x_hpmms_hp_daas_co_hp_consumable_inbound</name>
+        <operation display_value="read">read</operation>
+        <script/>
+        <sys_class_name>sys_security_acl</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2021-07-12 10:47:38</sys_created_on>
+        <sys_id>eb2d5f2d1bd1301099dc404cbc4bcb72</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>x_hpmms_hp_daas_co_hp_consumable_inbound</sys_name>
+        <sys_package display_value="HP DaaS Connector" source="x_hpmms_hp_daas_co">c0288f7fdb4be8d0250ccf5e13961929</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="HP DaaS Connector">c0288f7fdb4be8d0250ccf5e13961929</sys_scope>
+        <sys_update_name>sys_security_acl_eb2d5f2d1bd1301099dc404cbc4bcb72</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2021-07-12 10:47:38</sys_updated_on>
+        <type display_value="record">record</type>
+    </sys_security_acl>
+    <sys_update_version action="INSERT_OR_UPDATE">
+        <action>DELETE</action>
+        <application display_value="HP DaaS Connector">c0288f7fdb4be8d0250ccf5e13961929</application>
+        <file_path/>
+        <instance_id>f86ea8ecdbaf93c4b2e05d00cf961997</instance_id>
+        <instance_name>dev66788</instance_name>
+        <name>sys_security_acl_eb2d5f2d1bd1301099dc404cbc4bcb72</name>
+        <payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_security_acl"><sys_security_acl action="INSERT_OR_UPDATE"><active>true</active><admin_overrides>true</admin_overrides><advanced>false</advanced><condition/><description>Default access control on x_hpmms_hp_daas_co_hp_consumable_inbound</description><name>x_hpmms_hp_daas_co_hp_consumable_inbound</name><operation display_value="read">read</operation><script/><sys_class_name>sys_security_acl</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2021-07-12 10:47:38</sys_created_on><sys_id>eb2d5f2d1bd1301099dc404cbc4bcb72</sys_id><sys_mod_count>0</sys_mod_count><sys_name>x_hpmms_hp_daas_co_hp_consumable_inbound</sys_name><sys_package display_value="HP DaaS Connector" source="x_hpmms_hp_daas_co">c0288f7fdb4be8d0250ccf5e13961929</sys_package><sys_policy/><sys_scope display_value="HP DaaS Connector">c0288f7fdb4be8d0250ccf5e13961929</sys_scope><sys_update_name>sys_security_acl_eb2d5f2d1bd1301099dc404cbc4bcb72</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2021-07-12 10:47:38</sys_updated_on><type display_value="record">record</type></sys_security_acl></record_update>]]></payload>
+        <payload_hash>-1285882285</payload_hash>
+        <record_name>x_hpmms_hp_daas_co_hp_consumable_inbound</record_name>
+        <reverted_from/>
+        <source>93db4fff07c320105b77ff4c7c1ed0b9</source>
+        <source_table>sys_update_set</source_table>
+        <state>previous</state>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2021-07-12 10:47:38</sys_created_on>
+        <sys_id>e32d5f2d1bd1301099dc404cbc4bcb75</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_recorded_at>17a9a545e690000001</sys_recorded_at>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2021-07-12 10:47:38</sys_updated_on>
+        <type>Access Control</type>
+        <update_guid>2f2d5f2d0fd130101ad40c71aaee6f74</update_guid>
+        <update_guid_history>2f2d5f2d0fd130101ad40c71aaee6f74:-1285882285</update_guid_history>
+    </sys_update_version>
+    <sys_metadata_delete action="INSERT_OR_UPDATE">
+        <sys_audit_delete/>
+        <sys_class_name>sys_metadata_delete</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2021-07-12 10:50:04</sys_created_on>
+        <sys_db_object display_value="" name="sys_security_acl">sys_security_acl</sys_db_object>
+        <sys_id>01f6289bbce74a748fcf03c92d1e4990</sys_id>
+        <sys_metadata>eb2d5f2d1bd1301099dc404cbc4bcb72</sys_metadata>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>x_hpmms_hp_daas_co_hp_consumable_inbound</sys_name>
+        <sys_package display_value="HP DaaS Connector" source="x_hpmms_hp_daas_co">c0288f7fdb4be8d0250ccf5e13961929</sys_package>
+        <sys_parent display_value="">eb2d5f2d1bd1301099dc404cbc4bcb84</sys_parent>
+        <sys_policy/>
+        <sys_scope display_value="HP DaaS Connector">c0288f7fdb4be8d0250ccf5e13961929</sys_scope>
+        <sys_scope_delete display_value="">5d875586c98148cab39ce3dbb76b5184</sys_scope_delete>
+        <sys_update_name>sys_security_acl_eb2d5f2d1bd1301099dc404cbc4bcb72</sys_update_name>
+        <sys_update_version display_value="sys_security_acl_eb2d5f2d1bd1301099dc404cbc4bcb72">e32d5f2d1bd1301099dc404cbc4bcb75</sys_update_version>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2021-07-12 10:50:04</sys_updated_on>
+    </sys_metadata_delete>
+</record_update>

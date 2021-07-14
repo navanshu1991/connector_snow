@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>package_private</access>
+        <active>true</active>
+        <api_name>x_hpmms_hp_daas_co.InboundHPConsumable</api_name>
+        <caller_access/>
+        <client_callable>false</client_callable>
+        <description/>
+        <name>InboundHPConsumable</name>
+        <script><![CDATA[var InboundHPConsumable = Class.create();
+InboundHPConsumable.prototype = {
+    initialize: function(data, responseType) {
+        this.responseType = responseType;
+        this.data = data;
+//TODO: Set the customer name and customer ID
+        this.tableGR = new GlideRecord('');
+        this.tableGR.initialize();
+        this.tableGR.setValue('type', this.responseType);
+
+        this.logger = new Logger('Inbound HP Consumable ' + this.responseType);
+        //Logging in the incoming payload
+        this.logger.info('Incoming Payload for Consumable => \n' + JSON.stringify(data));
+    },
+
+    processInboundData: function() {
+        try {
+            switch (this.responseType) {
+                case 'SYNC':
+                    this._addSyncRecord();
+                    break;
+                default:
+                    throw new Error('Unsupported Consumable Response Type');
+            }
+        } catch (exception) {
+            this.logger.error('Error in processInboundData => ' + exception.toString());
+            throw exception;
+        }
+    },
+
+    _addSyncRecord: function() {
+        try {
+			var consumable = this.data;
+			
+            if (global.JSUtil.notNil(consumable.name))
+                this.tableGR.setValue('display_name', consumable.name);
+
+            if (global.JSUtil.notNil(consumable.assetType))
+                this.tableGR.setValue('model_category', consumable.assetType);
+
+            if (global.JSUtil.notNil(consumable.quantity))
+                this.tableGR.setValue('quantity', consumable.quantity);
+
+            if (global.JSUtil.notNil(consumable.podDate))
+                this.tableGR.setValue('pod_date', consumable.podDate);
+
+            if (global.JSUtil.notNil(consumable.state))
+                this.tableGR.setValue('state', consumable.state);
+
+            if (global.JSUtil.notNil(consumable.substate))
+                this.tableGR.setValue('substate', consumable.substate);
+
+            if (global.JSUtil.notNil(consumable.location.name))
+                this.tableGR.setValue('location_name', consumable.location.name);
+
+            if (global.JSUtil.notNil(consumable.location.street))
+                this.tableGR.setValue('location_street', consumable.location.street);
+
+            if (global.JSUtil.notNil(consumable.location.city))
+                this.tableGR.setValue('location_city', consumable.location.city);
+
+            if (global.JSUtil.notNil(consumable.location.state))
+                this.tableGR.setValue('location_state', consumable.location.state);
+
+            if (global.JSUtil.notNil(consumable.location.zip))
+                this.tableGR.setValue('location_zip', consumable.location.zip);
+
+            if (global.JSUtil.notNil(consumable.location.country))
+                this.tableGR.setValue('location_country', consumable.location.country);
+
+            if (global.JSUtil.notNil(consumable.modelName))
+                this.tableGR.setValue('model_name', consumable.modelName);
+
+            if (global.JSUtil.notNil(consumable.modelNumber))
+                this.tableGR.setValue('model_number', consumable.modelNumber);
+
+            if (global.JSUtil.notNil(consumable.parent))
+                this.tableGR.setValue('parent', consumable.parent);
+			
+			//Insert the record into the DB
+            this.tableGR.insert();
+        } catch (exception) {
+            this.logger.error('Error in _addSyncRecord => ' + exception.toString());
+            throw exception;
+        }
+    },
+
+    type: 'InboundHPConsumable'
+};]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2021-07-12 07:38:36</sys_created_on>
+        <sys_id>5ad1f2e91b51301099dc404cbc4bcbe2</sys_id>
+        <sys_mod_count>5</sys_mod_count>
+        <sys_name>InboundHPConsumable</sys_name>
+        <sys_package display_value="HP DaaS Connector" source="x_hpmms_hp_daas_co">c0288f7fdb4be8d0250ccf5e13961929</sys_package>
+        <sys_policy>read</sys_policy>
+        <sys_scope display_value="HP DaaS Connector">c0288f7fdb4be8d0250ccf5e13961929</sys_scope>
+        <sys_update_name>sys_script_include_5ad1f2e91b51301099dc404cbc4bcbe2</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2021-07-12 09:42:59</sys_updated_on>
+    </sys_script_include>
+</record_update>

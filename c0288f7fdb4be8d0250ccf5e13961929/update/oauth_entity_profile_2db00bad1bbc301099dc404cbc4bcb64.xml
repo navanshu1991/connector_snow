@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="oauth_entity_profile">
+    <oauth_entity_profile action="INSERT_OR_UPDATE">
+        <default>true</default>
+        <grant_type>password</grant_type>
+        <jwt_provider/>
+        <name>HP OAuth Registry default_profile</name>
+        <oauth_entity display_value="HP OAuth Registry">a37043211bfc301099dc404cbc4bcb00</oauth_entity>
+        <sys_class_name>oauth_entity_profile</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2021-06-17 12:11:51</sys_created_on>
+        <sys_id>2db00bad1bbc301099dc404cbc4bcb64</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>HP OAuth Registry default_profile</sys_name>
+        <sys_package display_value="HP DaaS Connector" source="x_hpmms_hp_daas_co">c0288f7fdb4be8d0250ccf5e13961929</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="HP DaaS Connector">c0288f7fdb4be8d0250ccf5e13961929</sys_scope>
+        <sys_update_name>oauth_entity_profile_2db00bad1bbc301099dc404cbc4bcb64</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2021-06-17 12:11:51</sys_updated_on>
+    </oauth_entity_profile>
+</record_update>

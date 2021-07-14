@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?><database>
+    <element label="HP Outbound Field Map" max_length="40" name="x_hpmms_hp_daas_co_outbound_field_map" sizeclass="60" type="collection">
+        <element attributes="encode_utf8=false" label="Account" max_length="32" name="account" reference="x_hpmms_hp_daas_co_hp_account" type="reference"/>
+        <element label="Account Field Map" max_length="40" name="account_field_map" type="boolean"/>
+        <element label="Allow Empty" max_length="40" name="allow_empty" type="boolean"/>
+        <element attributes="edge_encryption_enabled=true" label="API Element" max_length="40" name="api_element" type="string"/>
+        <element label="Description" max_length="255" name="description" type="string_full_utf8"/>
+        <element label="Dev Mode" max_length="40" name="dev_mode" read_only="true" type="boolean"/>
+        <element label="Exclude from Execution" max_length="40" name="exclude" type="boolean"/>
+        <element attributes="allow_null=true,allow_references=true" dependent="table" dependent_on_field="table" label="Field Name" max_length="80" name="field_name" type="field_name" use_dependent_field="true"/>
+        <element attributes="encode_utf8=false" label="HP Outbound Integration" mandatory="true" max_length="32" name="hp_outbound_intg" reference="x_hpmms_hp_daas_co_hp_outbound_integration" type="reference"/>
+        <element label="Ignore if Empty" max_length="40" name="ignore_empty" type="boolean"/>
+        <element default="javascript:getNextObjNumberPadded();" dynamic_default_value="fdcb83a85f220100a9ad2572f2b4773c" label="Number" max_length="40" name="number" read_only="true" type="string" use_dynamic_default="true"/>
+        <element label="Order" max_length="40" name="order" type="integer"/>
+        <element label="Run Script" max_length="40" name="run_script" type="boolean"/>
+        <element default="/**&#13;&#10;* @param tableGR - The table GR from the Table that calls the Outbound Integration&#13;&#10;* @param fieldName - fieldName selected above&#13;&#10;* @param fieldVal - value of the above field from the Table GlideRecord&#13;&#10;*/&#13;&#10;answer = (function process(tableGR, fieldName, fieldVal) {&#13;&#10;&#13;&#10;    // Add your code here&#13;&#10;    return &quot;&quot;; // return the value to be put into the API element&#13;&#10;&#13;&#10;})(tableGR, fieldName, fieldVal);" label="Script" max_length="8000" name="script" type="script_plain"/>
+        <element label="Table" max_length="80" name="table" type="table_name"/>
+        <index name="index">
+            <element name="hp_outbound_intg"/>
+        </index>
+        <index name="index2">
+            <element name="account"/>
+        </index>
+    </element>
+</database>

@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>package_private</access>
+        <active>true</active>
+        <api_name>x_hpmms_hp_daas_co.OutboundIntegration</api_name>
+        <caller_access/>
+        <client_callable>false</client_callable>
+        <description/>
+        <name>OutboundIntegration</name>
+        <script><![CDATA[var OutboundIntegration = Class.create();
+OutboundIntegration.prototype = {
+
+    /**
+     * This function is used to initialise an outbound integration
+     * @param {string} name 
+     * @param {object} input 
+     */
+    initialize: function(name, input) {
+        this.name = name;
+        this.input = input;
+        //Get the integration GlideRecord
+        this.intgGR = this._getIntegrationGlide();
+        this.restMessage = this.intgGR.rest_message.getDisplayValue();
+        this.restMethod = this.intgGR.rest_method.getDisplayValue();
+        this.instanceName = this.intgGR.getValue('hp_environment');
+        this.type = this.intgGR.getValue('api_type');
+        this.condition = this.intgGR.getValue('trigger_condition');
+        this.logger = new Logger('Outbound Integration: ' + name);
+        this.utility = new Utility();
+    },
+
+    /**
+     * This function generates the paylaod to be sent to HP API
+     * @returns object
+     */
+    generatePayload: function() {
+        try {
+            //Go through the field maps
+            var fieldMapGR = new GlideRecord('x_hpmms_hp_daas_co_outbound_field_map');
+            fieldMapGR.addQuery('hp_outbound_intg', this.intgGR.getValue('sys_id'));
+            fieldMapGR.addQuery('exclude', false);
+            fieldMapGR.orderBy('order');
+            fieldMapGR.query();
+
+            var payload;
+            if (this.type == 'get') payload = [];
+            if (this.type == 'post') payload = {};
+
+            while (fieldMapGR.next()) {
+                var outboundFm = new OutboundFieldMap(this.intgGR, fieldMapGR, this.input);
+
+                if (this.type == 'get') this._addToQueryParam(payload, outboundFm.runFieldMap());
+                else this._addToPayload(payload, outboundFm.runFieldMap());
+            }
+
+            this.logger.debug('Payload Generated: \n' + JSON.stringify(payload));
+            return payload;
+
+        } catch (exception) {
+            var errMsg = exception.toString();
+            if (errMsg.indexOf('Empty value') > 0) {
+                gs.addErrorMessage(errMsg);
+            } else {
+                this.logger.error('Error in generatePayload => \n' + errMsg);
+                throw exception;
+            }
+        }
+    },
+
+    /**
+     * Function to invoke the HP API with the passed input, this can be a get/post call
+     * @param {object} inputData 
+     * @returns response from the API: TODO: Evaluate if we can make this boolean
+     */
+    invokeAPI: function(inputData) {
+        //Get the Access token
+        try {
+            var accessToken = this._getAccessToken();
+            this.logger.info('Access token fetched successfully!');
+            this.logger.debug('Access token fetched => ' + accessToken);
+            var restService = new OutboundRest(this.restMessage, this.restMethod, this.instanceName, 300000, accessToken);
+            if (this.type == 'get') {
+                restService.setRequestQueryParams(inputData);
+            } else if (this.type == 'post') {
+                restService.setRequestPayload(inputData);
+            }
+
+            return restService.getResponse();
+
+        } catch (exception) {
+            this.logger.error('Error in invokeAPI =>\n' + exception.toString());
+            throw exception;
+        }
+    },
+
+    /**
+     * Private Function
+     * When field map returns an object with key-value pair, this function will add that to the payload
+     * @param {object} payload 
+     * @param {object} object 
+     * @returns 
+     */
+    _addToPayload: function(payload, object) {
+
+        try {
+            this.logger.debug('Adding object to the payload => \n' + JSON.stringify(object));
+            //Validate the object
+            if (!object || global.JSUtil.nil(object.key)) return; //TODO: Throw exception of invalid key, empty/null values are allowed
+
+            if (object.key.indexOf('.') == -1) {
+                payload[object.key] = object.value;
+            } else {
+                //Get into the array
+                var keyArr = object.key.split('.');
+                var currentObject = payload;
+                for (var i = 0; i < keyArr.length - 1; i++) {
+                    var key = keyArr[i];
+                    //If the key value is empty or a non-object
+                    if (global.JSUtil.nil(currentObject[key]) || typeof currentObject[key] != 'object') {
+                        this.logger.debug('Initializing ' + key);
+                        currentObject[key] = {};
+                    }
+                    currentObject = currentObject[key];
+                }
+                //At the end of the loop, we arrive at the last element
+                this.logger.debug('Adding value to ' + keyArr[keyArr.length - 1]);
+                currentObject[keyArr[keyArr.length - 1]] = object.value;
+            }
+        } catch (exception) {
+            this.logger.error('Error in _addToPayload =>\n' + exception.toString());
+            throw exception;
+        }
+    },
+
+    /**
+     * Private Function
+     * When field map returns an object with key-value pair, this function will add that to an array
+     * @param {object} payload 
+     * @param {object} object 
+     * @returns 
+     */
+    _addToQueryParam: function(array, object) {
+
+        try {
+            this.logger.debug('Adding object to the array => \n' + JSON.stringify(object));
+            //Validate the object
+            if (!object || global.JSUtil.nil(object.key)) return; //TODO: Throw exception of invalid key, empty/null values are allowed
+
+            array.push(object);
+        } catch (exception) {
+            this.logger.error('Error in _addToQueryParam =>\n' + exception.toString());
+            throw exception;
+        }
+    },
+
+    /**
+     * Private Function
+     * This function fetches the GlideRecord Object of a configuration
+     * @returns object
+     */
+    _getIntegrationGlide: function() {
+        var integrationGR = new GlideRecord('x_hpmms_hp_daas_co_hp_outbound_integration');
+
+        var isPresent = integrationGR.get('title', this.name);
+
+        if (!isPresent) {
+            var errMsg = 'No Outbound Integration defined with name ' + this.name;
+            this.logger.error(errMsg);
+            throw new Error(errMsg);
+        }
+
+
+        return integrationGR;
+    },
+
+    /**
+     * Private Function
+     * This function returns an access token which can be further sent in a request
+     * @returns string
+     */
+    _getAccessToken: function() {
+        //Fetch all the details from integration to get all the details
+        //var encrypter = new GlideEncrypter();
+
+        var userName = this.intgGR.auth_profile.username.toString();
+        //var password = encrypter.decrypt(this.intgGR.auth_profile.password);
+        var password = this.intgGR.auth_profile.password.getDecryptedValue();
+        var clientKey = this.intgGR.oauth_entity.client_id.toString();
+        //var clientSecret = encrypter.decrypt(this.intgGR.oauth_entity.client_secret);
+        var clientSecret = this.intgGR.oauth_entity.client_secret.getDecryptedValue();
+        var endpoint = this.intgGR.oauth_entity.token_url.toString();
+
+        var tokenRequest = 'grant_type=password&username=' + userName + '&password=' + password + '&scope=&client_id=' + clientKey + '&client_secret=' + clientSecret;
+        this.logger.debug('Access Token Request Body => \n' + tokenRequest);
+
+        try {
+            var webService = new sn_ws.RESTMessageV2();
+            webService.setEndpoint(endpoint);
+            webService.setHttpMethod("post");
+            webService.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            webService.setRequestBody(tokenRequest);
+            webService.setHttpTimeout(60000);
+
+            var response = webService.execute();
+            this.logger.info('Access Token Response => \n' + response.getBody());
+            var responseBody = JSON.parse(response.getBody());
+
+            if (global.JSUtil.nil(responseBody.access_token)) {
+                var errMsg = 'Error in retrieving the Access Token from HP. Error => ' + response.getBody();
+                this.logger.error(errMsg);
+                throw new Error(errMsg);
+            }
+
+            return responseBody.access_token;
+
+        } catch (exception) {
+            this.logger.error('Error in _getAccessToken =>\n' + exception.toString());
+            throw exception;
+        }
+    },
+
+    /**
+     * Runs the condition on the GlideRecord and returns true or false
+     * @returns Boolean
+     */
+    runCondition: function() {
+        try {
+            if (!this.condition) return false;
+            return GlideFilter.checkRecord(this.input, this.condition);
+        } catch (exception) {
+            this.logger.error('Error in runCondition => ' + exception.toString());
+            throw exception;
+        }
+    },
+
+    /**
+     * Copies the entire configuration as well as field Maps to produce a new one
+     * Does not copy the table and the filter conditions on the configuration
+     * Clears out the table and fields on the field maps
+     */
+    copyConfiguration: function() {
+        try {
+            //Copy the configuration
+            var copyConfig = this.utility.copyGlideRecord(this.intgGR, ['number', 'table_name', 'trigger_condition']);
+            copyConfig.insert();
+            //Copy the field maps
+            var fieldMapGR = new GlideRecord('x_hpmms_hp_daas_co_outbound_field_map');
+            fieldMapGR.addQuery('hp_outbound_intg', this.intgGR.getValue('sys_id'));
+            fieldMapGR.query();
+
+            while (fieldMapGR.next()) {
+                var fieldMapCopy = this.utility.copyGlideRecord(fieldMapGR, ['number', 'hp_outbound_intg', 'table', 'field_name']);
+                //Need to set the Integration in the new field map
+                fieldMapCopy.setValue('hp_outbound_intg', copyConfig.getValue('sys_id'));
+                fieldMapCopy.update();
+            }
+
+        } catch (exception) {
+            this.logger.error('Error in copyConfiguration => ' + exception.toString());
+            gs.addErrorMessage('Copy Configuration was not successful, please check logs');
+        }
+    },
+
+
+    type: 'OutboundIntegration'
+};]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2021-06-29 13:13:24</sys_created_on>
+        <sys_id>84d181a51b01301099dc404cbc4bcb9f</sys_id>
+        <sys_mod_count>26</sys_mod_count>
+        <sys_name>OutboundIntegration</sys_name>
+        <sys_package display_value="HP DaaS Connector" source="x_hpmms_hp_daas_co">c0288f7fdb4be8d0250ccf5e13961929</sys_package>
+        <sys_policy>read</sys_policy>
+        <sys_scope display_value="HP DaaS Connector">c0288f7fdb4be8d0250ccf5e13961929</sys_scope>
+        <sys_update_name>sys_script_include_84d181a51b01301099dc404cbc4bcb9f</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2021-07-14 09:09:56</sys_updated_on>
+    </sys_script_include>
+</record_update>

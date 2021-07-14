@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+    <sys_script_include action="DELETE">
+        <access>package_private</access>
+        <active>true</active>
+        <api_name>x_hpmms_hp_daas_co.outboundIntegration</api_name>
+        <caller_access/>
+        <client_callable>false</client_callable>
+        <description/>
+        <name>outboundIntegration</name>
+        <script><![CDATA[var outboundIntegration = Class.create();
+outboundIntegration.prototype = {
+    initialize: function(name, input) {
+        this.name = name;
+        this.input = input;
+        //Get the integration GlideRecord
+        this.intgGR = this._getIntegrationGlide();
+        this.restMessage = this.intgGR.rest_message.getDisplayValue();
+        this.restMethod = this.intgGR.rest_method.getDisplayValue();
+    },
+
+    generatePaylaod: function() {
+        try {
+            //Go through the field maps
+            var fieldMapGR = new GlideRecord('x_hpmms_hp_daas_co_outbound_field_map');
+            fieldMapGR.addActiveQuery();
+            fieldMapGR.addQuery('hp_outbound_intg', this.intgGR.getValue('sys_id'));
+            fieldMapGR.query();
+
+            var payload = {};
+
+            while(fieldMapGR.next()) {
+                var outboundFm = new outboundFieldMap(this.intgGR, fieldMapGR, this.input);
+
+            }
+
+
+        } catch (exception) {
+            //TODO: Handle the exceptions from field map processing
+        }
+    },
+
+    _getIntegrationGlide: function () {
+        var integrationGR = new GlideRecord('x_hpmms_hp_daas_co_hp_outbound_integration');
+
+        var isPresent = integrationGR.get('title', this.name);
+
+        if(!isPresent) return;//TODO: Throw exception saying that Integration not found
+
+        return integrationGR;
+    },
+
+    _getAccessToken: function() {
+        //Fetch all the details from integration to get all the details
+        var encrypter = new GlideEncrypter(); 
+
+        var userName = this.intgGR.auth_profile.username.toString();
+        var password = encrypter.decrypt(this.intgGR.auth_profile.password);
+        var clientKey = this.intgGR.oauth_entity.client_id.toString();
+        var clientSecret = encrypter.decrypt(this.intgGR.oauth_entity.client_secret);
+        var endpoint = this.intgGR.oauth_entity.token_url.toString();
+
+        var tokenRequest = 'grant_type=password&username=' + userName + '&password=' + password + '&scope=&client_id=' + clientKey + '&client_secret=' + clientSecret;
+
+        try {
+            var webService = new sn_ws.RESTMessageV2();
+            webService.setEndpoint(endpoint);
+            webService.setHttpMethod("post");
+            webService.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            webService.setRequestBody(tokenRequest);
+            webService.setHttpTimeout(60000);
+    
+            var response = webService.execute();
+            //TODO: Log the token response body
+            var responseBody = JSON.parse(response.getBody());
+
+            if(globalThis.JSUtil.nil(responseBody.access_token)) return;//TODO: Throw exception
+            
+            return responseBody.access_token;
+
+        } catch (exception) {
+            gs.print('Exception while generating token' + exception);
+        }
+    },
+
+    type: 'outboundIntegration'
+};]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2021-06-17 10:04:53</sys_created_on>
+        <sys_id>a5a3aa691b7c301099dc404cbc4bcb31</sys_id>
+        <sys_mod_count>1</sys_mod_count>
+        <sys_name>outboundIntegration</sys_name>
+        <sys_package display_value="HP DaaS Connector" source="x_hpmms_hp_daas_co">c0288f7fdb4be8d0250ccf5e13961929</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="HP DaaS Connector">c0288f7fdb4be8d0250ccf5e13961929</sys_scope>
+        <sys_update_name>sys_script_include_a5a3aa691b7c301099dc404cbc4bcb31</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2021-06-17 13:02:08</sys_updated_on>
+    </sys_script_include>
+    <sys_update_version action="INSERT_OR_UPDATE">
+        <action>DELETE</action>
+        <application display_value="HP DaaS Connector">c0288f7fdb4be8d0250ccf5e13961929</application>
+        <file_path/>
+        <instance_id>f86ea8ecdbaf93c4b2e05d00cf961997</instance_id>
+        <instance_name>dev66788</instance_name>
+        <name>sys_script_include_a5a3aa691b7c301099dc404cbc4bcb31</name>
+        <payload>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;record_update table="sys_script_include"&gt;&lt;sys_script_include action="INSERT_OR_UPDATE"&gt;&lt;access&gt;package_private&lt;/access&gt;&lt;active&gt;true&lt;/active&gt;&lt;api_name&gt;x_hpmms_hp_daas_co.outboundIntegration&lt;/api_name&gt;&lt;caller_access/&gt;&lt;client_callable&gt;false&lt;/client_callable&gt;&lt;description/&gt;&lt;name&gt;outboundIntegration&lt;/name&gt;&lt;script&gt;&lt;![CDATA[var outboundIntegration = Class.create();
+outboundIntegration.prototype = {
+    initialize: function(name, input) {
+        this.name = name;
+        this.input = input;
+        //Get the integration GlideRecord
+        this.intgGR = this._getIntegrationGlide();
+        this.restMessage = this.intgGR.rest_message.getDisplayValue();
+        this.restMethod = this.intgGR.rest_method.getDisplayValue();
+    },
+
+    generatePaylaod: function() {
+        try {
+            //Go through the field maps
+            var fieldMapGR = new GlideRecord('x_hpmms_hp_daas_co_outbound_field_map');
+            fieldMapGR.addActiveQuery();
+            fieldMapGR.addQuery('hp_outbound_intg', this.intgGR.getValue('sys_id'));
+            fieldMapGR.query();
+
+            var payload = {};
+
+            while(fieldMapGR.next()) {
+                var outboundFm = new outboundFieldMap(this.intgGR, fieldMapGR, this.input);
+
+            }
+
+
+        } catch (exception) {
+            //TODO: Handle the exceptions from field map processing
+        }
+    },
+
+    _getIntegrationGlide: function () {
+        var integrationGR = new GlideRecord('x_hpmms_hp_daas_co_hp_outbound_integration');
+
+        var isPresent = integrationGR.get('title', this.name);
+
+        if(!isPresent) return;//TODO: Throw exception saying that Integration not found
+
+        return integrationGR;
+    },
+
+    _getAccessToken: function() {
+        //Fetch all the details from integration to get all the details
+        var encrypter = new GlideEncrypter(); 
+
+        var userName = this.intgGR.auth_profile.username.toString();
+        var password = encrypter.decrypt(this.intgGR.auth_profile.password);
+        var clientKey = this.intgGR.oauth_entity.client_id.toString();
+        var clientSecret = encrypter.decrypt(this.intgGR.oauth_entity.client_secret);
+        var endpoint = this.intgGR.oauth_entity.token_url.toString();
+
+        var tokenRequest = 'grant_type=password&amp;username=' + userName + '&amp;password=' + password + '&amp;scope=&amp;client_id=' + clientKey + '&amp;client_secret=' + clientSecret;
+
+        try {
+            var webService = new sn_ws.RESTMessageV2();
+            webService.setEndpoint(endpoint);
+            webService.setHttpMethod("post");
+            webService.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            webService.setRequestBody(tokenRequest);
+            webService.setHttpTimeout(60000);
+    
+            var response = webService.execute();
+            //TODO: Log the token response body
+            var responseBody = JSON.parse(response.getBody());
+
+            if(globalThis.JSUtil.nil(responseBody.access_token)) return;//TODO: Throw exception
+            
+            return responseBody.access_token;
+
+        } catch (exception) {
+            gs.print('Exception while generating token' + exception);
+        }
+    },
+
+    type: 'outboundIntegration'
+};]]&gt;&lt;/script&gt;&lt;sys_class_name&gt;sys_script_include&lt;/sys_class_name&gt;&lt;sys_created_by&gt;admin&lt;/sys_created_by&gt;&lt;sys_created_on&gt;2021-06-17 10:04:53&lt;/sys_created_on&gt;&lt;sys_id&gt;a5a3aa691b7c301099dc404cbc4bcb31&lt;/sys_id&gt;&lt;sys_mod_count&gt;1&lt;/sys_mod_count&gt;&lt;sys_name&gt;outboundIntegration&lt;/sys_name&gt;&lt;sys_package display_value="HP DaaS Connector" source="x_hpmms_hp_daas_co"&gt;c0288f7fdb4be8d0250ccf5e13961929&lt;/sys_package&gt;&lt;sys_policy/&gt;&lt;sys_scope display_value="HP DaaS Connector"&gt;c0288f7fdb4be8d0250ccf5e13961929&lt;/sys_scope&gt;&lt;sys_update_name&gt;sys_script_include_a5a3aa691b7c301099dc404cbc4bcb31&lt;/sys_update_name&gt;&lt;sys_updated_by&gt;admin&lt;/sys_updated_by&gt;&lt;sys_updated_on&gt;2021-06-17 13:02:08&lt;/sys_updated_on&gt;&lt;/sys_script_include&gt;&lt;/record_update&gt;</payload>
+        <payload_hash>1592882057</payload_hash>
+        <record_name>outboundIntegration</record_name>
+        <reverted_from/>
+        <source>93db4fff07c320105b77ff4c7c1ed0b9</source>
+        <source_table>sys_update_set</source_table>
+        <state>previous</state>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2021-06-17 13:02:08</sys_created_on>
+        <sys_id>8a3c4fe51bfc301099dc404cbc4bcbca</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_recorded_at>17a1a1087190000001</sys_recorded_at>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2021-06-17 13:02:08</sys_updated_on>
+        <type>Script Include</type>
+        <update_guid>c23c4fe593fc3010bef54cca76bda3ca</update_guid>
+        <update_guid_history>c23c4fe593fc3010bef54cca76bda3ca:1592882057,69a3aa69547c3010c93baea569cf1434:-55966403</update_guid_history>
+    </sys_update_version>
+    <sys_metadata_delete action="INSERT_OR_UPDATE">
+        <sys_audit_delete/>
+        <sys_class_name>sys_metadata_delete</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2021-06-29 12:59:20</sys_created_on>
+        <sys_db_object display_value="" name="sys_script_include">sys_script_include</sys_db_object>
+        <sys_id>1233fc8253ef4cbd86957a169489aef1</sys_id>
+        <sys_metadata>a5a3aa691b7c301099dc404cbc4bcb31</sys_metadata>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>outboundIntegration</sys_name>
+        <sys_package display_value="HP DaaS Connector" source="x_hpmms_hp_daas_co">c0288f7fdb4be8d0250ccf5e13961929</sys_package>
+        <sys_parent/>
+        <sys_policy/>
+        <sys_scope display_value="HP DaaS Connector">c0288f7fdb4be8d0250ccf5e13961929</sys_scope>
+        <sys_scope_delete display_value="">5d875586c98148cab39ce3dbb76b5184</sys_scope_delete>
+        <sys_update_name>sys_script_include_a5a3aa691b7c301099dc404cbc4bcb31</sys_update_name>
+        <sys_update_version display_value="sys_script_include_a5a3aa691b7c301099dc404cbc4bcb31">8a3c4fe51bfc301099dc404cbc4bcbca</sys_update_version>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2021-06-29 12:59:20</sys_updated_on>
+    </sys_metadata_delete>
+</record_update>

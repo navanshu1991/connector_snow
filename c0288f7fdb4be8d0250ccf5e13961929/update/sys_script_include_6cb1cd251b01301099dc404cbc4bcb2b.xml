@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>package_private</access>
+        <active>true</active>
+        <api_name>x_hpmms_hp_daas_co.OutboundFieldMap</api_name>
+        <caller_access/>
+        <client_callable>false</client_callable>
+        <description/>
+        <name>OutboundFieldMap</name>
+        <script><![CDATA[var OutboundFieldMap = Class.create();
+OutboundFieldMap.prototype = {
+
+    /**
+     * Function to initialise the field map class from the information passed through the integration
+     * @param {object} integrationGR 
+     * @param {object} fieldMapGR 
+     * @param {object} input 
+     */
+    initialize: function(integrationGR, fieldMapGR, input) {
+        this.integrationGR = integrationGR;
+        this.fieldMapGR = fieldMapGR;
+        //Input to the integration, this must be the glide record of the table selected in the integration
+        this.input = input;
+		this.apiElement = this.fieldMapGR.getValue('api_element');
+		this.logger = new Logger('Field Map API field ' + this.apiElement);
+
+        this.intgTable = this.integrationGR.getValue('table_name');
+        this.fmTable = this.fieldMapGR.getValue('table');
+        //Field from the Field map record
+        this.sourceField = this.fieldMapGR.getValue('field_name');
+        this.accountMap = this.fieldMapGR.account_field_map;
+        this.account = this.fieldMapGR.account;
+        //Field value from the source table
+        this.sourceVal = this._fetchValue();
+        //Since this is a boolean value, we want to get it as boolean
+        this.allowEmpty = this.fieldMapGR.allow_empty;
+        this.ignoreEmpty = this.fieldMapGR.ignore_empty;
+
+        //Since this is a boolean value, we want to get it as boolean
+        this.runScript = this.fieldMapGR.run_script;
+		//Field Map name to displayed in Errors
+		this.fmName = this._getFieldMapName();
+    },
+
+    /**
+     * Function to process the field map
+     * @returns Object with key value pair
+     */
+    runFieldMap: function() {
+        this.logger.debug('Processing field map => ' + this.apiElement);
+        if (!this._isTableValid()) throw new Error('The table on the field Map ' + this.apiElement + ' does not match the table from Outbound Configuration');
+
+        if (this.runScript) return this._evaluateScript();
+
+        if (!this.allowEmpty && global.JSUtil.nil(this.sourceVal)) throw new Error('Empty value is not allowed for ' + this.fmName);
+
+        if (global.JSUtil.nil(this.sourceVal) && this.ignoreEmpty) return; //We will ignore the empty in the caller
+
+        return {
+            key: this.apiElement,
+            value: this.sourceVal
+        };
+    },
+
+    /**
+     * Private function to check if a given table in the field map is a valid one or not
+     * @returns true/false
+     */
+    _isTableValid: function() {
+        if (this.intgTable && this.fmTable) return this.intgTable == this.fmTable;
+        return true;
+    },
+
+    /**
+     * Private function to return the value of the field which is specified in the field map
+     * @returns fieldValue
+     */
+    _fetchValue: function() {
+        try {
+            if (this.accountMap && this.account) {
+                this.logger.debug('Returning field map value => ' + this.account);
+                return this.account; //Returning the GlideElement
+            }
+            if (this.sourceField) {
+                if (this.sourceField.indexOf('.') == -1) {
+                    //This means that field is directly present on the table
+                    this.logger.debug('Returning field map value => ' + this.input.getValue(this.sourceField));
+                    return this.input.getValue(this.sourceField);
+                } else {
+                    //We need to do the dot walking
+                    var nameArr = this.sourceField.split('.');
+                    var element = this.input[nameArr[0]];
+                    for (var i = 1; i < nameArr.length; i++) {
+                        if (global.JSUtil.nil(element)) return ''; //Just return an empty value here
+                        element = element[nameArr[i]];
+                    }
+                    //Using display value so that we do not return the sys id
+                    this.logger.debug('Returning field map value => ' + element.getDisplayValue());
+                    return element.getDisplayValue();
+                }
+            }
+			return '';//Returning empty value if we're out
+        } catch (exception) {
+            this.logger.info('Error in _fetchValue => ' + exception.toString());
+            throw exception;
+        }
+    },
+
+    /**
+     * Private function evaluate the script if it is applicable
+     * @returns object of key/value pair
+     */
+    _evaluateScript: function() {
+        try {
+            var evaluator = new GlideScopedEvaluator();
+            //Table from which data is coming
+            evaluator.putVariable('tableGR', this.input);
+            //Name of the field in action
+            evaluator.putVariable('fieldName', this.sourceField);
+            //Value of the field extracted
+            evaluator.putVariable('fieldVal', this.sourceVal);
+
+            //Call to evaluate the script
+            var result = evaluator.evaluateScript(this.fieldMapGR, 'script');
+            this.logger.debug('Returning field map value => ' + result);
+
+            if (global.JSUtil.nil(result) && this.ignoreEmpty) return;
+
+            return {
+                key: this.apiElement,
+                value: result
+            };
+        } catch (exception) {
+            this.logger.error('Error in _evaluateScript for ' + this.apiElement + ': \n' + exception.toString());
+            throw exception;
+        }
+    },
+	
+	/**
+	* Private function
+	* Get the Field Map name to be displayed in the UI
+	* @returns String
+	*/
+	_getFieldMapName: function () {
+		//Get the field Label if the this.fmTable and this.sourceField are populated
+		if (this.fmTable && this.sourceField) {
+// 			var dictionaryGR = new GlideRecord('sys_dictionary');
+// 			dictionaryGR.addEncodedQuery('element=' + this.sourceField + '^name=' + this.fmTable);
+// 			dictionaryGR.query();
+// 			if (dictionaryGR.next()) return dictionaryGR.getValue('column_label');
+			return this.fieldMapGR.field_name.getDisplayValue();
+		}
+		//The field label will be Account if the field map is of Account Type
+		if (this.accountMap) {
+			return 'Account';
+		}
+		//By default, return the this.apiElement
+		return this.apiElement;
+	},
+
+    type: 'OutboundFieldMap'
+};]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2021-06-29 13:12:52</sys_created_on>
+        <sys_id>6cb1cd251b01301099dc404cbc4bcb2b</sys_id>
+        <sys_mod_count>28</sys_mod_count>
+        <sys_name>OutboundFieldMap</sys_name>
+        <sys_package display_value="HP DaaS Connector" source="x_hpmms_hp_daas_co">c0288f7fdb4be8d0250ccf5e13961929</sys_package>
+        <sys_policy>read</sys_policy>
+        <sys_scope display_value="HP DaaS Connector">c0288f7fdb4be8d0250ccf5e13961929</sys_scope>
+        <sys_update_name>sys_script_include_6cb1cd251b01301099dc404cbc4bcb2b</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2021-07-07 15:07:47</sys_updated_on>
+    </sys_script_include>
+</record_update>

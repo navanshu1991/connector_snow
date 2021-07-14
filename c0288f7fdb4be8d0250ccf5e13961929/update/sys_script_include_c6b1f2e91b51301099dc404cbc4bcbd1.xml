@@ -1,0 +1,384 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>package_private</access>
+        <active>true</active>
+        <api_name>x_hpmms_hp_daas_co.InboundHPAsset</api_name>
+        <caller_access/>
+        <client_callable>false</client_callable>
+        <description/>
+        <name>InboundHPAsset</name>
+        <script><![CDATA[var InboundHPAsset = Class.create();
+InboundHPAsset.prototype = {
+    initialize: function(data, responseType) {
+        this.responseType = responseType;
+        this.data = data;
+
+		//TODO: Set the customer name and customer ID
+        this.tableGR = new GlideRecord('');
+        this.tableGR.initialize();
+        this.tableGR.setValue('type', this.responseType);
+
+        this.logger = new Logger('Inbound HP Asset ' + this.responseType);
+        //Logging in the incoming payload
+        this.logger.info('Incoming Payload for Asset => \n' + JSON.stringify(data));
+    },
+
+    processInboundData: function() {
+        try {
+            switch (this.responseType) {
+                case 'SYNC':
+                    this._addSyncRecord();
+                    break;
+                default:
+                    throw new Error('Unsupported Asset Response Type');
+            }
+        } catch (exception) {
+            this.logger.error('Error in processInboundData => ' + exception.toString());
+            throw exception;
+        }
+    },
+
+    _addSyncRecord: function() {
+        var device = this.data;
+        try {
+			
+            if (global.JSUtil.notNil(device.acceptanceDocument))
+                this.tableGR.setValue('acceptance_document', device.acceptanceDocument);
+
+            if (global.JSUtil.notNil(device.accepted))
+                this.tableGR.setValue('accepted', device.accepted);
+
+            if (global.JSUtil.notNil(device.account))
+                this.tableGR.setValue('account', device.account);
+
+            if (global.JSUtil.notNil(device.acquisitionMethod))
+                this.tableGR.setValue('acquisition_method', device.acquisitionMethod);
+            //active_to
+
+            if (global.JSUtil.notNil(device.custom1))
+                this.tableGR.setValue('asset_custom1', device.custom1);
+
+            if (global.JSUtil.notNil(device.custom2))
+                this.tableGR.setValue('asset_custom2', device.custom2);
+
+            if (global.JSUtil.notNil(device.custom3))
+                this.tableGR.setValue('asset_custom3', device.custom3);
+
+            if (global.JSUtil.notNil(device.custom4))
+                this.tableGR.setValue('asset_custom4', device.custom4);
+
+            if (global.JSUtil.notNil(device.custom5))
+                this.tableGR.setValue('asset_custom5', device.custom5);
+
+            if (global.JSUtil.notNil(device.custom6))
+                this.tableGR.setValue('asset_custom6', device.custom6);
+
+            if (global.JSUtil.notNil(device.custom7))
+                this.tableGR.setValue('asset_custom7', device.custom7);
+
+            if (global.JSUtil.notNil(device.custom8))
+                this.tableGR.setValue('asset_custom8', device.custom8);
+
+            if (global.JSUtil.notNil(device.custom9))
+                this.tableGR.setValue('asset_custom9', device.custom9);
+
+            if (global.JSUtil.notNil(device.custom10))
+                this.tableGR.setValue('asset_custom10', device.custom10);
+
+            if (global.JSUtil.notNil(device.assetNumber))
+                this.tableGR.setValue('asset_tag', device.assetNumber);
+
+            if (global.JSUtil.notNil(device.assigned))
+                this.tableGR.setValue('assigned', device.assigned);
+
+            if (global.JSUtil.notNil(device.assignedTo)) {
+
+                if (global.JSUtil.notNil(device.assignedTo.email))
+                    this.tableGR.setValue('assigned_to_email', device.assignedTo.email);
+
+                if (global.JSUtil.notNil(device.assignedTo.firstName))
+                    this.tableGR.setValue('assigned_to', device.assignedTo.firstName);
+
+                if (global.JSUtil.notNil(device.assignedTo.lastName))
+                    this.tableGR.setValue('assigned_to_last_name', device.assignedTo.lastName);
+            }
+
+            if (global.JSUtil.notNil(device.leaseBuyoutCost))
+                this.tableGR.setValue('buyout_amount', device.leaseBuyoutCost);
+
+            if (global.JSUtil.notNil(device.buyoutQuoteValidDat))
+                this.tableGR.setValue('buyout_quote_valid_date', device.buyoutQuoteValidDate);
+
+            if (global.JSUtil.notNil(device.configuration))
+                this.tableGR.setValue('configuration', device.configuration);
+
+            if (global.JSUtil.notNil(device.contractCurrenyCode))
+                this.tableGR.setValue('contract_currency_code', device.contractCurrenyCode);
+
+            if (global.JSUtil.notNil(device.contractExchangeRate))
+                this.tableGR.setValue('contract_exchange_rate', device.contractExchangeRate);
+
+            if (global.JSUtil.notNil(device.costCenter))
+                this.tableGR.setValue('cost_center', device.costCenter);
+
+            if (global.JSUtil.notNil(device.customerBuyoutPrice)) {
+                this.tableGR.setValue('customer_buyout_price', device.customerBuyoutPrice);
+            }
+
+            if (global.JSUtil.notNil(device.customerPeriodHwPrice))
+                this.tableGR.setValue('customer_period_hw_price', device.customerPeriodHwPrice);
+
+            if (global.JSUtil.notNil(device.customerPeriodServicePrice))
+                this.tableGR.setValue('customer_period_service_price', device.customerPeriodServicePrice);
+
+            if (global.JSUtil.notNil(device.customerPeriodPrice))
+                this.tableGR.setValue('customer_price', device.customerPeriodPrice);
+
+            if (global.JSUtil.notNil(device.customerRequestDate))
+                this.tableGR.setValue('customer_request_date', device.customerRequestDate);
+
+            if (global.JSUtil.notNil(device.podDate))
+                this.tableGR.setValue('delivery_date', device.podDate);
+
+            if (global.JSUtil.notNil(device.deliveryDocument))
+                this.tableGR.setValue('delivery_document', device.deliveryDocument);
+
+            if (global.JSUtil.notNil(device.department))
+                this.tableGR.setValue('department', device.department);
+
+            if (global.JSUtil.notNil(device.disposalReason))
+                this.tableGR.setValue('disposal_reason', device.disposalReason);
+
+            if (global.JSUtil.notNil(device.disposalRequestDate))
+                this.tableGR.setValue('disposal_request_date', device.disposalRequestDate);
+
+            if (global.JSUtil.notNil(device.earlyTermination))
+                this.tableGR.setValue('early_termination', device.earlyTermination);
+
+            if (global.JSUtil.notNil(device.exchange))
+                this.tableGR.setValue('exchange', device.exchange);
+
+            if (global.JSUtil.notNil(device.hpOrderNumber))
+                this.tableGR.setValue('hp_order_number', device.hpOrderNumber);
+
+            if (global.JSUtil.notNil(device.hwInvoiceDate))
+                this.tableGR.setValue('hw_invoice_date', device.hwInvoiceDate);
+
+            if (global.JSUtil.notNil(device.image))
+                this.tableGR.setValue('image', device.image);
+
+            if (global.JSUtil.notNil(device.installed))
+                this.tableGR.setValue('installed', device.installed);
+
+            if (global.JSUtil.notNil(device.hwInvoiceNumber))
+                this.tableGR.setValue('invoice_number', device.hwInvoiceNumber);
+
+            if (global.JSUtil.notNil(device.leaseBuyoutCost))
+                this.tableGR.setValue('lease_buyout_cost', device.leaseBuyoutCost);
+
+            if (global.JSUtil.notNil(device.leaseCoordinator)) {
+
+                if (global.JSUtil.notNil(device.leaseCoordinator.email))
+                    this.tableGR.setValue('lease_coordinator_email', device.leaseCoordinator.email);
+
+                if (global.JSUtil.notNil(device.leaseCoordinator.firstName))
+                    this.tableGR.setValue('lease_coordinator_first_name', device.leaseCoordinator.firstName);
+
+                if (global.JSUtil.notNil(device.leaseCoordinator.lastName))
+                    this.tableGR.setValue('lease_coordinator_last_name', device.leaseCoordinator.lastName);
+            }
+
+            if (global.JSUtil.notNil(device.serviceEndDate))
+                this.tableGR.setValue('lease_end', device.serviceEndDate);
+
+            if (global.JSUtil.notNil(device.serviceStartDate))
+                this.tableGR.setValue('lease_start', device.serviceStartDate);
+
+            if (global.JSUtil.notNil(device.leaseTerm))
+                this.tableGR.setValue('lease_term', device.leaseTerm);
+
+            if (global.JSUtil.notNil(device.leasingScheduleNumber))
+                this.tableGR.setValue('lease_schedule', device.leasingScheduleNumber);
+
+            if (global.JSUtil.notNil(device.leasingStatus))
+                this.tableGR.setValue('leasing_status', device.leasingStatus);
+
+            if (global.JSUtil.notNil(device.localizationSku))
+                this.tableGR.setValue('localization', device.localizationSku);
+
+            if (global.JSUtil.notNil(device.city))
+                this.tableGR.setValue('location_city', device.city);
+
+            if (global.JSUtil.notNil(device.country))
+                this.tableGR.setValue('location_country', device.country);
+
+            if (global.JSUtil.notNil(device.locationDetail))
+                this.tableGR.setValue('location_detail', device.locationDetail);
+
+            if (global.JSUtil.notNil(device.location))
+                this.tableGR.setValue('location', device.location);
+
+            if (global.JSUtil.notNil(device.siteId))
+                this.tableGR.setValue('location_site_id', device.siteId);
+
+            //2021-03-22 - asset state was mapped to location state, corrected
+            if (global.JSUtil.notNil(device.locationState))
+                this.tableGR.setValue('location_state', device.locationState);
+
+            if (global.JSUtil.notNil(device.street))
+                this.tableGR.setValue('location_street', device.street);
+
+            if (global.JSUtil.notNil(device.zip))
+                this.tableGR.setValue('location_zip', device.zip);
+
+            if (global.JSUtil.notNil(device.assetTypes))
+                this.tableGR.setValue('model_category', device.assetTypes.toString());
+
+            if (global.JSUtil.notNil(device.manufacturer))
+                this.tableGR.setValue('model_manufacturer', device.manufacturer);
+
+            if (global.JSUtil.notNil(device.name))
+                this.tableGR.setValue('model', device.name);
+
+            if (global.JSUtil.notNil(device.productNumber))
+                this.tableGR.setValue('model_number', device.productNumber);
+
+            if (global.JSUtil.notNil(device.productLineName))
+                this.tableGR.setValue('model_product_line_name', device.productLineName);
+
+            if (global.JSUtil.notNil(device.negotiatedBundlePrice))
+                this.tableGR.setValue('negotiated_bundle_price', device.negotiatedBundlePrice);
+
+            if (global.JSUtil.notNil(device.ordered))
+                this.tableGR.setValue('ordered', device.ordered);
+
+            if (global.JSUtil.notNil(device.parent))
+                this.tableGR.setValue('parent', device.parent);
+
+            if (global.JSUtil.notNil(device.purchaseOrderLine))
+                this.tableGR.setValue('purchase_order_line', device.purchaseOrderLinen);
+
+            if (global.JSUtil.notNil(device.reservedFor))
+                this.tableGR.setValue('reserved_for', device.reservedFor);
+
+            if (global.JSUtil.notNil(device.retiredDate))
+                this.tableGR.setValue('retired', device.retiredDate);
+
+            if (global.JSUtil.notNil(device.serialNumber))
+                this.tableGR.setValue('serial_number', device.serialNumber);
+
+            if (global.JSUtil.notNil(device.shipmentItem)) {
+                if (global.JSUtil.notNil(device.shipmentItem.trackingNumber)) {
+                    this.tableGR.setValue('ship_item_tracking_number', device.shipmentItem.trackingNumber);
+                }
+                if (global.JSUtil.notNil(device.shipmentItem.trackAndTraceLink)) {
+                    this.tableGR.setValue('ship_item_track_and_trace_link', device.shipmentItem.trackAndTraceLink);
+                }
+                if (global.JSUtil.notNil(device.shipmentItem.plannedDeliveryDate)) {
+                    this.tableGR.setValue('ship_item_planned_delivery_date', device.shipmentItem.plannedDeliveryDate);
+                }
+                if (global.JSUtil.notNil(device.shipmentItem.plannedShipDate)) {
+                    this.tableGR.setValue('ship_item_planned_ship_date', device.shipmentItem.plannedShipDate);
+                }
+                if (global.JSUtil.notNil(device.shipmentItem.actualShipDate)) {
+                    this.tableGR.setValue('ship_item_actual_ship_date', device.shipmentItem.actualShipDate);
+                }
+                if (global.JSUtil.notNil(device.shipmentItem.actualDeliveryDate)) {
+                    this.tableGR.setValue('ship_item_actual_delivery_date', device.shipmentItem.actualDeliveryDate);
+                }
+                if (global.JSUtil.notNil(device.shipmentItem.manufacturingDate)) {
+                    this.tableGR.setValue('ship_item_manufacturing_date', device.shipmentItem.manufacturingDate);
+                }
+                if (global.JSUtil.notNil(device.shipmentItem.shipToContact)) {
+                    this.tableGR.setValue('ship_item_ship_to_contact', device.shipmentItem.shipToContact);
+                }
+            }
+
+
+            if (global.JSUtil.notNil(device.stockroom))
+                this.tableGR.setValue('stockroom', device.stockroom.name.toString());
+
+            if (global.JSUtil.notNil(device.substate))
+                this.tableGR.setValue('substatus', device.substate);
+
+            if (global.JSUtil.notNil(device.swapLoaner))
+                this.tableGR.setValue('swap_loaner', device.swapLoaner);
+
+            if (global.JSUtil.notNil(device.swappedSerialNumber))
+                this.tableGR.setValue('swapped_serial_number', device.swappedSerialNumber);
+
+            if (global.JSUtil.notNil(device.varianceFee))
+                this.tableGR.setValue('variance_fee', device.varianceFee);
+
+            if (global.JSUtil.notNil(device.varianceFeeDate))
+                this.tableGR.setValue('variance_fee_date', device.varianceFeeDate);
+
+            if (global.JSUtil.notNil(device.warrantyExpiration))
+                this.tableGR.setValue('warranty_expiration', device.warrantyExpiration);
+
+            //2021-03-11 - including mapping for customer early term price
+            if (global.JSUtil.notNil(device.customerLeaseEarlyTermPrice))
+                this.tableGR.setValue('customer_lease_earlyterm_price', device.customerLeaseEarlyTermPrice);
+
+            //2021-03-15 - including mapping for Negotiated UnitPrice and MAC address
+            if (global.JSUtil.notNil(device.negotiatedUnitPrice))
+                this.tableGR.setValue('negotiated_unit_price', device.negotiatedUnitPrice);
+
+            if (global.JSUtil.notNil(device.assetMacAddress))
+                this.tableGR.setValue('mac_address', device.assetMacAddress);
+
+            //2021-03-22 - including mapping for asset state
+            if (global.JSUtil.notNil(device.state))
+                this.tableGR.setValue('install_status', device.state);
+
+            if (global.JSUtil.notNil(device.purchaseOrderLine)) {
+                if (global.JSUtil.notNil(device.purchaseOrderLine.customerPO)) {
+                    this.tableGR.setValue('purchase_line_customer_po', device.purchaseOrderLine.customerPO);
+                }
+                if (global.JSUtil.notNil(device.purchaseOrderLine.requested)) {
+                    this.tableGR.setValue('purchase_line_requested', device.purchaseOrderLine.requested);
+                }
+                if (global.JSUtil.notNil(device.purchaseOrderLine.orderReceiveDate)) {
+                    this.tableGR.setValue('purchase_line_order_receive_date', device.purchaseOrderLine.orderReceiveDate);
+                }
+                if (global.JSUtil.notNil(device.purchaseOrderLine.cleanOrderDate)) {
+                    this.tableGR.setValue('purchase_line_clean_order_date', device.purchaseOrderLine.cleanOrderDate);
+                }
+                if (global.JSUtil.notNil(device.purchaseOrderLine.shipTo)) {
+                    this.tableGR.setValue('purchase_line_ship_to', device.purchaseOrderLine.shipTo);
+                }
+            }
+
+            if (global.JSUtil.notNil(device.contractExpiration))
+                this.tableGR.setValue('contract_expiration', device.contractExpiration);
+
+            if (global.JSUtil.notNil(device.carepackExpiration))
+                this.tableGR.setValue('carepack_expiration', device.carepackExpiration);
+
+            if (global.JSUtil.notNil(device.latestWarrantyExpiration))
+                this.tableGR.setValue('latest_warranty_expiration', device.latestWarrantyExpiration);
+
+            //Insert the record into the DB
+            this.tableGR.insert();
+        } catch (exception) {
+            this.logger.error('Error in _addSyncRecord => ' + exception.toString());
+            throw exception;
+        }
+    },
+
+    type: 'InboundHPAsset'
+};]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2021-07-12 07:37:56</sys_created_on>
+        <sys_id>c6b1f2e91b51301099dc404cbc4bcbd1</sys_id>
+        <sys_mod_count>8</sys_mod_count>
+        <sys_name>InboundHPAsset</sys_name>
+        <sys_package display_value="HP DaaS Connector" source="x_hpmms_hp_daas_co">c0288f7fdb4be8d0250ccf5e13961929</sys_package>
+        <sys_policy>read</sys_policy>
+        <sys_scope display_value="HP DaaS Connector">c0288f7fdb4be8d0250ccf5e13961929</sys_scope>
+        <sys_update_name>sys_script_include_c6b1f2e91b51301099dc404cbc4bcbd1</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2021-07-12 09:50:43</sys_updated_on>
+    </sys_script_include>
+</record_update>

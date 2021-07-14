@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?><database>
+    <element extends="sys_import_set_row" label="HP Consumable Inbound" max_length="40" name="x_hpmms_hp_daas_co_hp_consumable_inbound" sizeclass="0" type="collection">
+        <element label="Display Name" max_length="40" name="display_name" read_only="true" type="string"/>
+        <element label="Location City" max_length="40" name="location_city" read_only="true" type="string"/>
+        <element label="Location Country" max_length="40" name="location_country" read_only="true" type="string"/>
+        <element label="Location Name" max_length="40" name="location_name" read_only="true" type="string"/>
+        <element label="Location State/Province" max_length="40" name="location_state" read_only="true" type="string"/>
+        <element label="Location Street" max_length="40" name="location_street" read_only="true" type="string"/>
+        <element label="Location Zip" max_length="40" name="location_zip" read_only="true" type="string"/>
+        <element label="Model Category" max_length="40" name="model_category" read_only="true" type="string"/>
+        <element label="Model Name" max_length="40" name="model_name" read_only="true" type="string"/>
+        <element label="Model Number" max_length="40" name="model_number" read_only="true" type="string"/>
+        <element label="Parent" max_length="40" name="parent" read_only="true" type="string"/>
+        <element label="POD Date" max_length="40" name="pod_date" read_only="true" type="string"/>
+        <element label="Quantity" max_length="40" name="quantity" read_only="true" type="string"/>
+        <element label="State" max_length="40" name="state" read_only="true" type="string"/>
+        <element label="Substate" max_length="40" name="substate" read_only="true" type="string"/>
+    </element>
+</database>

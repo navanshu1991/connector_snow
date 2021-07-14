@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update>
+    <sys_documentation element="state" label="HP Case Location Province" language="en" table="x_hpmms_hp_daas_co_hp_case_inbound">
+        <sys_documentation action="INSERT_OR_UPDATE">
+            <element>state</element>
+            <help/>
+            <hint/>
+            <label>HP Case Location Province</label>
+            <language>en</language>
+            <name>x_hpmms_hp_daas_co_hp_case_inbound</name>
+            <plural>HP Case Location Provinces</plural>
+            <sys_class_name>sys_documentation</sys_class_name>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2021-06-28 12:38:49</sys_created_on>
+            <sys_id>a350bbc51b41301099dc404cbc4bcb05</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_name>HP Case Location Province</sys_name>
+            <sys_package display_value="HP DaaS Connector" source="x_hpmms_hp_daas_co">c0288f7fdb4be8d0250ccf5e13961929</sys_package>
+            <sys_policy/>
+            <sys_scope display_value="HP DaaS Connector">c0288f7fdb4be8d0250ccf5e13961929</sys_scope>
+            <sys_update_name>sys_documentation_x_hpmms_hp_daas_co_hp_case_inbound_state_en</sys_update_name>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2021-06-28 12:38:49</sys_updated_on>
+            <url/>
+            <url_target/>
+        </sys_documentation>
+    </sys_documentation>
+</record_update>

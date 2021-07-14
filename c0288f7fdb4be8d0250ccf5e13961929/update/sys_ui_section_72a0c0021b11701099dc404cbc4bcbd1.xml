@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update>
+    <sys_ui_section caption="Asset Integration Configuration" section_id="72a0c0021b11701099dc404cbc4bcbd1" sys_domain="global" table="x_hpmms_hp_daas_co_hp_account" version="3" view="">
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>start_date_time</element>
+            <position>0</position>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2021-07-13 08:04:17</sys_created_on>
+            <sys_id>d8610c021b11701099dc404cbc4bcb10</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="Asset Integration Configuration" display_value="Asset Integration Configuration" name="x_hpmms_hp_daas_co_hp_account" sys_domain="global" view="Default view">72a0c0021b11701099dc404cbc4bcbd1</sys_ui_section>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2021-07-13 08:04:17</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>exclude_consumables</element>
+            <position>1</position>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2021-07-13 08:04:17</sys_created_on>
+            <sys_id>5c610c021b11701099dc404cbc4bcb10</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="Asset Integration Configuration" display_value="Asset Integration Configuration" name="x_hpmms_hp_daas_co_hp_account" sys_domain="global" view="Default view">72a0c0021b11701099dc404cbc4bcbd1</sys_ui_section>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2021-07-13 08:04:17</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>init_load_complete</element>
+            <position>2</position>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2021-07-13 08:04:17</sys_created_on>
+            <sys_id>dc610c021b11701099dc404cbc4bcb10</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="Asset Integration Configuration" display_value="Asset Integration Configuration" name="x_hpmms_hp_daas_co_hp_account" sys_domain="global" view="Default view">72a0c0021b11701099dc404cbc4bcbd1</sys_ui_section>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2021-07-13 08:04:17</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>.split</element>
+            <position>3</position>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2021-07-13 08:04:17</sys_created_on>
+            <sys_id>50610c021b11701099dc404cbc4bcb11</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="Asset Integration Configuration" display_value="Asset Integration Configuration" name="x_hpmms_hp_daas_co_hp_account" sys_domain="global" view="Default view">72a0c0021b11701099dc404cbc4bcbd1</sys_ui_section>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2021-07-13 08:04:17</sys_updated_on>
+            <sys_user/>
+            <type>.split</type>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>end_date_time</element>
+            <position>4</position>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2021-07-13 08:04:17</sys_created_on>
+            <sys_id>d0610c021b11701099dc404cbc4bcb11</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="Asset Integration Configuration" display_value="Asset Integration Configuration" name="x_hpmms_hp_daas_co_hp_account" sys_domain="global" view="Default view">72a0c0021b11701099dc404cbc4bcbd1</sys_ui_section>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2021-07-13 08:04:17</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>asset_load_schedule</element>
+            <position>5</position>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2021-07-13 08:04:17</sys_created_on>
+            <sys_id>54610c021b11701099dc404cbc4bcb11</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="Asset Integration Configuration" display_value="Asset Integration Configuration" name="x_hpmms_hp_daas_co_hp_account" sys_domain="global" view="Default view">72a0c0021b11701099dc404cbc4bcbd1</sys_ui_section>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2021-07-13 08:04:17</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>asset_load_failure</element>
+            <position>6</position>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2021-07-13 08:04:17</sys_created_on>
+            <sys_id>d4610c021b11701099dc404cbc4bcb11</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="Asset Integration Configuration" display_value="Asset Integration Configuration" name="x_hpmms_hp_daas_co_hp_account" sys_domain="global" view="Default view">72a0c0021b11701099dc404cbc4bcbd1</sys_ui_section>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2021-07-13 08:04:17</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_section action="INSERT_OR_UPDATE">
+            <caption>Asset Integration Configuration</caption>
+            <header>false</header>
+            <name>x_hpmms_hp_daas_co_hp_account</name>
+            <roles/>
+            <sys_class_name>sys_ui_section</sys_class_name>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2021-07-13 08:01:10</sys_created_on>
+            <sys_domain>global</sys_domain>
+            <sys_domain_path>/</sys_domain_path>
+            <sys_id>72a0c0021b11701099dc404cbc4bcbd1</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_name>x_hpmms_hp_daas_co_hp_account</sys_name>
+            <sys_overrides/>
+            <sys_package display_value="HP DaaS Connector" source="x_hpmms_hp_daas_co">c0288f7fdb4be8d0250ccf5e13961929</sys_package>
+            <sys_policy/>
+            <sys_scope display_value="HP DaaS Connector">c0288f7fdb4be8d0250ccf5e13961929</sys_scope>
+            <sys_update_name>sys_ui_section_72a0c0021b11701099dc404cbc4bcbd1</sys_update_name>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2021-07-13 08:01:10</sys_updated_on>
+            <sys_user/>
+            <title>false</title>
+            <view display_value="Default view" name="NULL">Default view</view>
+            <view_name/>
+        </sys_ui_section>
+    </sys_ui_section>
+</record_update>

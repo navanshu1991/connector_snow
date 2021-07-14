@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+    <sys_script_include action="DELETE">
+        <access>package_private</access>
+        <active>true</active>
+        <api_name>x_hpmms_hp_daas_co.OutboundFieldMap</api_name>
+        <caller_access/>
+        <client_callable>false</client_callable>
+        <description/>
+        <name>OutboundFieldMap</name>
+        <script><![CDATA[var OutboundFieldMap = Class.create();
+OutboundFieldMap.prototype = {
+
+    /**
+     * Function to initialise the field map class from the information passed through the integration
+     * @param {object} integrationGR 
+     * @param {object} fieldMapGR 
+     * @param {object} input 
+     */
+    initialize: function (integrationGR, fieldMapGR, input) {
+        this.integrationGR = integrationGR;
+        this.fieldMapGR = fieldMapGR;
+        //Input to the integration, this must be the glide record of the table selected in the integration
+        this.input = input;
+
+        this.intgTable = this.integrationGR.getValue('table_name');
+        this.fmTable = this.fieldMapGR.getValue('table');
+        //Field from the Field map record
+        this.sourceField = this.fieldMapGR.getValue('field_name');
+        //Field value from the source table
+        this.sourceVal = this._fetchValue();
+        //Since this is a boolean value, we want to get it as boolean
+        this.allowEmpty = this.fieldMapGR.allow_empty;
+        this.ignoreEmpty = this.fieldMapGR.ignore_empty;
+        this.apiElement = this.fieldMapGR.getValue('api_element');
+        //Since this is a boolean value, we want to get it as boolean
+        this.runScript = this.fieldMapGR.run_script;
+        //Initializing the logger
+        this.logger = new Logger('Field Map API field ' + this.apiElement);
+    },
+
+    /**
+     * Function to process the field map
+     * @returns Object with key value pair
+     */
+    runFieldMap: function () {
+        if (!this._isTableValid()) throw new Error('The table on the field Map ' + this.apiElement + ' does not match the table from Outbound Configuration');
+
+        if (this.runScript) return this._evaluateScript();
+
+        if (!this.allowEmpty && global.JSUtil.nil(this.sourceVal)) throw new Error('Empty value is not allowed for ' + this.apiElement);
+
+        if (global.JSUtil.nil(this.sourceVal) && this.ignoreEmpty) return; //We will ignore the empty in the caller
+
+        return {
+            key: this.apiElement,
+            value: this.sourceVal
+        };
+    },
+
+    /**
+     * Private function to check if a given table in the field map is a valid one or not
+     * @returns true/false
+     */
+    _isTableValid: function () {
+        return this.intgTable == this.fmTable;
+    },
+
+    /**
+     * Private function to return the value of the field which is specified in the field map
+     * @returns fieldValue
+     */
+    _fetchValue: function () {
+        if (this.sourceField.indexOf('.') == -1) {
+            //This means that field is directly present on the table
+            this.logger.debug('Returning field map value => ' + this.input.getValue(this.sourceField));
+            return this.input.getValue(this.sourceField);
+        } else {
+            //We need to do the dot walking
+            var nameArr = this.sourceField.split('.');
+            var element = this.input[nameArr[0]];
+            for (var i = 1; i < nameArr.length; i++) {
+                if (global.JSUtil.nil(element)) return ''; //Just return an empty value here
+                element = element[nameArr[i]];
+            }
+            //Using display value so that we do not return the sys id
+            this.logger.debug('Returning field map value => ' + element.getDisplayValue());
+            return element.getDisplayValue();
+        }
+    },
+
+    /**
+     * Private function evaluate the script if it is applicable
+     * @returns object of key/value pair
+     */
+    _evaluateScript: function () {
+        try {
+            var evaluator = new GlideScopedEvaluator();
+            //Table from which data is coming
+            evaluator.putVariable('tableGR', this.input);
+            //Name of the field in action
+            evaluator.putVariable('fieldName', this.sourceField);
+            //Value of the field extracted
+            evaluator.putVariable('fieldVal', this.sourceVal);
+
+            //Call to evaluate the script
+            evaluator.evaluateScript(this.fieldMapGR, 'script');
+
+            var answer = evaluator.getVariable('answer');
+            this.logger.debug('Returning field map value => ' + answer);
+
+            if (global.JSUtil.nil(answer) && this.ignoreEmpty) return;
+
+            return {
+                key: this.apiElement,
+                value: answer
+            };
+        } catch (exception) {
+            this.logger.error('Error in _evaluateScript for ' + this.apiElement + ': \n' + exception.toString());
+            throw exception;
+        }
+    },
+
+    type: 'OutboundFieldMap'
+};]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2021-06-29 13:00:31</sys_created_on>
+        <sys_id>c3eebce11b01301099dc404cbc4bcbd5</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>OutboundFieldMap</sys_name>
+        <sys_package display_value="HP DaaS Connector" source="x_hpmms_hp_daas_co">c0288f7fdb4be8d0250ccf5e13961929</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="HP DaaS Connector">c0288f7fdb4be8d0250ccf5e13961929</sys_scope>
+        <sys_update_name>sys_script_include_c3eebce11b01301099dc404cbc4bcbd5</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2021-06-29 13:00:31</sys_updated_on>
+    </sys_script_include>
+    <sys_update_version action="INSERT_OR_UPDATE">
+        <action>DELETE</action>
+        <application display_value="HP DaaS Connector">c0288f7fdb4be8d0250ccf5e13961929</application>
+        <file_path/>
+        <instance_id>f86ea8ecdbaf93c4b2e05d00cf961997</instance_id>
+        <instance_name>dev66788</instance_name>
+        <name>sys_script_include_c3eebce11b01301099dc404cbc4bcbd5</name>
+        <payload>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;record_update table="sys_script_include"&gt;&lt;sys_script_include action="INSERT_OR_UPDATE"&gt;&lt;access&gt;package_private&lt;/access&gt;&lt;active&gt;true&lt;/active&gt;&lt;api_name&gt;x_hpmms_hp_daas_co.OutboundFieldMap&lt;/api_name&gt;&lt;caller_access/&gt;&lt;client_callable&gt;false&lt;/client_callable&gt;&lt;description/&gt;&lt;name&gt;OutboundFieldMap&lt;/name&gt;&lt;script&gt;&lt;![CDATA[var OutboundFieldMap = Class.create();
+OutboundFieldMap.prototype = {
+
+    /**
+     * Function to initialise the field map class from the information passed through the integration
+     * @param {object} integrationGR 
+     * @param {object} fieldMapGR 
+     * @param {object} input 
+     */
+    initialize: function (integrationGR, fieldMapGR, input) {
+        this.integrationGR = integrationGR;
+        this.fieldMapGR = fieldMapGR;
+        //Input to the integration, this must be the glide record of the table selected in the integration
+        this.input = input;
+
+        this.intgTable = this.integrationGR.getValue('table_name');
+        this.fmTable = this.fieldMapGR.getValue('table');
+        //Field from the Field map record
+        this.sourceField = this.fieldMapGR.getValue('field_name');
+        //Field value from the source table
+        this.sourceVal = this._fetchValue();
+        //Since this is a boolean value, we want to get it as boolean
+        this.allowEmpty = this.fieldMapGR.allow_empty;
+        this.ignoreEmpty = this.fieldMapGR.ignore_empty;
+        this.apiElement = this.fieldMapGR.getValue('api_element');
+        //Since this is a boolean value, we want to get it as boolean
+        this.runScript = this.fieldMapGR.run_script;
+        //Initializing the logger
+        this.logger = new Logger('Field Map API field ' + this.apiElement);
+    },
+
+    /**
+     * Function to process the field map
+     * @returns Object with key value pair
+     */
+    runFieldMap: function () {
+        if (!this._isTableValid()) throw new Error('The table on the field Map ' + this.apiElement + ' does not match the table from Outbound Configuration');
+
+        if (this.runScript) return this._evaluateScript();
+
+        if (!this.allowEmpty &amp;&amp; global.JSUtil.nil(this.sourceVal)) throw new Error('Empty value is not allowed for ' + this.apiElement);
+
+        if (global.JSUtil.nil(this.sourceVal) &amp;&amp; this.ignoreEmpty) return; //We will ignore the empty in the caller
+
+        return {
+            key: this.apiElement,
+            value: this.sourceVal
+        };
+    },
+
+    /**
+     * Private function to check if a given table in the field map is a valid one or not
+     * @returns true/false
+     */
+    _isTableValid: function () {
+        return this.intgTable == this.fmTable;
+    },
+
+    /**
+     * Private function to return the value of the field which is specified in the field map
+     * @returns fieldValue
+     */
+    _fetchValue: function () {
+        if (this.sourceField.indexOf('.') == -1) {
+            //This means that field is directly present on the table
+            this.logger.debug('Returning field map value =&gt; ' + this.input.getValue(this.sourceField));
+            return this.input.getValue(this.sourceField);
+        } else {
+            //We need to do the dot walking
+            var nameArr = this.sourceField.split('.');
+            var element = this.input[nameArr[0]];
+            for (var i = 1; i &lt; nameArr.length; i++) {
+                if (global.JSUtil.nil(element)) return ''; //Just return an empty value here
+                element = element[nameArr[i]];
+            }
+            //Using display value so that we do not return the sys id
+            this.logger.debug('Returning field map value =&gt; ' + element.getDisplayValue());
+            return element.getDisplayValue();
+        }
+    },
+
+    /**
+     * Private function evaluate the script if it is applicable
+     * @returns object of key/value pair
+     */
+    _evaluateScript: function () {
+        try {
+            var evaluator = new GlideScopedEvaluator();
+            //Table from which data is coming
+            evaluator.putVariable('tableGR', this.input);
+            //Name of the field in action
+            evaluator.putVariable('fieldName', this.sourceField);
+            //Value of the field extracted
+            evaluator.putVariable('fieldVal', this.sourceVal);
+
+            //Call to evaluate the script
+            evaluator.evaluateScript(this.fieldMapGR, 'script');
+
+            var answer = evaluator.getVariable('answer');
+            this.logger.debug('Returning field map value =&gt; ' + answer);
+
+            if (global.JSUtil.nil(answer) &amp;&amp; this.ignoreEmpty) return;
+
+            return {
+                key: this.apiElement,
+                value: answer
+            };
+        } catch (exception) {
+            this.logger.error('Error in _evaluateScript for ' + this.apiElement + ': \n' + exception.toString());
+            throw exception;
+        }
+    },
+
+    type: 'OutboundFieldMap'
+};]]&gt;&lt;/script&gt;&lt;sys_class_name&gt;sys_script_include&lt;/sys_class_name&gt;&lt;sys_created_by&gt;admin&lt;/sys_created_by&gt;&lt;sys_created_on&gt;2021-06-29 13:00:31&lt;/sys_created_on&gt;&lt;sys_id&gt;c3eebce11b01301099dc404cbc4bcbd5&lt;/sys_id&gt;&lt;sys_mod_count&gt;0&lt;/sys_mod_count&gt;&lt;sys_name&gt;OutboundFieldMap&lt;/sys_name&gt;&lt;sys_package display_value="HP DaaS Connector" source="x_hpmms_hp_daas_co"&gt;c0288f7fdb4be8d0250ccf5e13961929&lt;/sys_package&gt;&lt;sys_policy/&gt;&lt;sys_scope display_value="HP DaaS Connector"&gt;c0288f7fdb4be8d0250ccf5e13961929&lt;/sys_scope&gt;&lt;sys_update_name&gt;sys_script_include_c3eebce11b01301099dc404cbc4bcbd5&lt;/sys_update_name&gt;&lt;sys_updated_by&gt;admin&lt;/sys_updated_by&gt;&lt;sys_updated_on&gt;2021-06-29 13:00:31&lt;/sys_updated_on&gt;&lt;/sys_script_include&gt;&lt;/record_update&gt;</payload>
+        <payload_hash>612514284</payload_hash>
+        <record_name>OutboundFieldMap</record_name>
+        <reverted_from/>
+        <source>93db4fff07c320105b77ff4c7c1ed0b9</source>
+        <source_table>sys_update_set</source_table>
+        <state>previous</state>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2021-06-29 13:00:31</sys_created_on>
+        <sys_id>43eebce11b01301099dc404cbc4bcbd9</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_recorded_at>17a57db59f80000001</sys_recorded_at>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2021-06-29 13:00:31</sys_updated_on>
+        <type>Script Include</type>
+        <update_guid>8beebce19e013010a837d0507049bdd8</update_guid>
+        <update_guid_history>8beebce19e013010a837d0507049bdd8:612514284</update_guid_history>
+    </sys_update_version>
+    <sys_metadata_delete action="INSERT_OR_UPDATE">
+        <sys_audit_delete/>
+        <sys_class_name>sys_metadata_delete</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2021-06-29 13:03:41</sys_created_on>
+        <sys_db_object display_value="" name="sys_script_include">sys_script_include</sys_db_object>
+        <sys_id>0668f11cda8149a0813da3b1d5c15490</sys_id>
+        <sys_metadata>c3eebce11b01301099dc404cbc4bcbd5</sys_metadata>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>OutboundFieldMap</sys_name>
+        <sys_package display_value="HP DaaS Connector" source="x_hpmms_hp_daas_co">c0288f7fdb4be8d0250ccf5e13961929</sys_package>
+        <sys_parent/>
+        <sys_policy/>
+        <sys_scope display_value="HP DaaS Connector">c0288f7fdb4be8d0250ccf5e13961929</sys_scope>
+        <sys_scope_delete display_value="">5d875586c98148cab39ce3dbb76b5184</sys_scope_delete>
+        <sys_update_name>sys_script_include_c3eebce11b01301099dc404cbc4bcbd5</sys_update_name>
+        <sys_update_version display_value="sys_script_include_c3eebce11b01301099dc404cbc4bcbd5">43eebce11b01301099dc404cbc4bcbd9</sys_update_version>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2021-06-29 13:03:41</sys_updated_on>
+    </sys_metadata_delete>
+</record_update>

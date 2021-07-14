@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_rest_message_fn_parameters">
+    <sys_rest_message_fn_parameters action="INSERT_OR_UPDATE">
+        <name>instance_name</name>
+        <rest_message_function display_value="Reopen Case">6256e1d11b30301099dc404cbc4bcbe1</rest_message_function>
+        <sys_class_name>sys_rest_message_fn_parameters</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2021-07-05 08:18:51</sys_created_on>
+        <sys_id>3ff7f2131b41301099dc404cbc4bcb44</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>instance_name</sys_name>
+        <sys_package display_value="HP DaaS Connector" source="x_hpmms_hp_daas_co">c0288f7fdb4be8d0250ccf5e13961929</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="HP DaaS Connector">c0288f7fdb4be8d0250ccf5e13961929</sys_scope>
+        <sys_update_name>sys_rest_message_fn_parameters_3ff7f2131b41301099dc404cbc4bcb44</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2021-07-05 08:18:51</sys_updated_on>
+        <type>string</type>
+        <value>hpdev</value>
+    </sys_rest_message_fn_parameters>
+</record_update>

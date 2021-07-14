@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_ws_operation">
+    <sys_ws_operation action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <consumes>application/json,application/xml,text/xml</consumes>
+        <consumes_customized>false</consumes_customized>
+        <default_operation_uri/>
+        <enforce_acl>cf9d01d3e73003009d6247e603f6a990</enforce_acl>
+        <http_method>POST</http_method>
+        <name>Update</name>
+        <operation_script><![CDATA[(function process( /*RESTAPIRequest*/ request, /*RESTAPIResponse*/ response) {
+
+    var errMsg;
+    var successResponse = {
+        message: 'Request Processed Successfully!',
+    };
+    /**
+     * Process the information depending on the type of Notification
+     * Type - UPDATE, REVERSE
+     */
+    var logger = new Logger('Inbound Case API');
+    try {
+        var requestBody = request.body;
+        var inputData = requestBody.data;
+        logger.info('Incoming Request Data => ' + JSON.stringify(inputData));
+        var inboundCaseObject;
+        
+        if (inputData && inputData.caseExchange && inputData.caseExchange.notificationType) {
+            switch (requestBody.data.caseExchange.notificationType) {
+                case 'update_case':
+                    inboundCaseObject = new InboundHPCase('UPDATE', inputData);
+                    break;
+                case 'reverse_case':
+                    inboundCaseObject = new InboundHPCase('REVERSE', inputData);
+                    break;
+                case 'attachment':
+                    inboundCaseObject = new InboundHPCase('ATTACHMENT', inputData);
+                    break;
+            }
+            if (inboundCaseObject) {
+                //Success response
+                inboundCaseObject.processInboundData();
+                //Return Success response
+                response.setStatus(200);
+                response.setBody(successResponse);
+
+            } else {
+                //Bad request 400 Error
+                errMsg = 'Bad Request: Unexpected Notification Type received in the Payload';
+                logger.error(errMsg);
+                response.setError(new sn_ws_err.BadRequestError(errMsg));
+            }
+        } else {
+            //Bad request 400 Error
+            errMsg = 'Bad Request: Unexpected Request Recieved';
+            logger.error(errMsg);
+            response.setError(new sn_ws_err.BadRequestError(errMsg));
+        }
+
+    } catch (exception) {
+        errMsg = 'Error in API call => ' + exception.toString();
+        logger.error(errMsg);
+        //Return an 500 Response to the end user
+        var error = new sn_ws_err.ServiceError();
+        error.setStatus(500);
+        error.setMessage('Internal Server Error');
+        error.setDetail(errMsg);
+        response.setError(error);
+    }
+
+})(request, response);]]></operation_script>
+        <operation_uri>/api/x_hpmms_hp_daas_co/hp_case_inbound/update</operation_uri>
+        <produces>application/json,application/xml,text/xml</produces>
+        <produces_customized>false</produces_customized>
+        <relative_path>/update</relative_path>
+        <request_example/>
+        <requires_acl_authorization>true</requires_acl_authorization>
+        <requires_authentication>true</requires_authentication>
+        <requires_snc_internal_role>true</requires_snc_internal_role>
+        <short_description/>
+        <sys_class_name>sys_ws_operation</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2021-06-29 12:57:09</sys_created_on>
+        <sys_id>720ef8e11b01301099dc404cbc4bcba7</sys_id>
+        <sys_mod_count>17</sys_mod_count>
+        <sys_name>Update</sys_name>
+        <sys_package display_value="HP DaaS Connector" source="x_hpmms_hp_daas_co">c0288f7fdb4be8d0250ccf5e13961929</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="HP DaaS Connector">c0288f7fdb4be8d0250ccf5e13961929</sys_scope>
+        <sys_update_name>sys_ws_operation_720ef8e11b01301099dc404cbc4bcba7</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2021-06-30 15:00:50</sys_updated_on>
+        <web_service_definition display_value="HP Case Inbound">493d7ca11b01301099dc404cbc4bcb40</web_service_definition>
+        <web_service_version/>
+    </sys_ws_operation>
+</record_update>

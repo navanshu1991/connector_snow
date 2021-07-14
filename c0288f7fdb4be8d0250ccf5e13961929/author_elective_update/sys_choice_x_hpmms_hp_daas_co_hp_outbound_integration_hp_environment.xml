@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update>
+    <sys_choice action="INSERT_OR_UPDATE" field="hp_environment" table="x_hpmms_hp_daas_co_hp_outbound_integration" version="3">
+        <sys_choice_set action="INSERT_OR_UPDATE">
+            <element>hp_environment</element>
+            <name>x_hpmms_hp_daas_co_hp_outbound_integration</name>
+            <sys_class_name>sys_choice_set</sys_class_name>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2021-03-29 14:25:23</sys_created_on>
+            <sys_id>a110e3ff070720105b77ff4c7c1ed057</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_name>hp_environment</sys_name>
+            <sys_package display_value="HP DaaS Connector" source="x_hpmms_hp_daas_co">c0288f7fdb4be8d0250ccf5e13961929</sys_package>
+            <sys_policy/>
+            <sys_scope display_value="HP DaaS Connector">c0288f7fdb4be8d0250ccf5e13961929</sys_scope>
+            <sys_update_name>sys_choice_x_hpmms_hp_daas_co_hp_outbound_integration_hp_environment</sys_update_name>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2021-03-29 14:25:23</sys_updated_on>
+        </sys_choice_set>
+        <sys_choice action="INSERT_OR_UPDATE">
+            <dependent_value/>
+            <element>hp_environment</element>
+            <hint/>
+            <inactive>false</inactive>
+            <label>HP Dev</label>
+            <language>en</language>
+            <name>x_hpmms_hp_daas_co_hp_outbound_integration</name>
+            <sequence>0</sequence>
+            <synonyms/>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2021-03-29 14:25:23</sys_created_on>
+            <sys_domain>global</sys_domain>
+            <sys_domain_path>/</sys_domain_path>
+            <sys_id>6910e3ff070720105b77ff4c7c1ed056</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2021-03-29 14:25:23</sys_updated_on>
+            <value>hpdev</value>
+        </sys_choice>
+        <sys_choice action="INSERT_OR_UPDATE">
+            <dependent_value/>
+            <element>hp_environment</element>
+            <hint/>
+            <inactive>false</inactive>
+            <label>HP Test</label>
+            <language>en</language>
+            <name>x_hpmms_hp_daas_co_hp_outbound_integration</name>
+            <sequence>1</sequence>
+            <synonyms/>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2021-03-29 14:25:23</sys_created_on>
+            <sys_domain>global</sys_domain>
+            <sys_domain_path>/</sys_domain_path>
+            <sys_id>e510e3ff070720105b77ff4c7c1ed058</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2021-03-29 14:25:23</sys_updated_on>
+            <value>hptest</value>
+        </sys_choice>
+        <sys_choice action="INSERT_OR_UPDATE">
+            <dependent_value/>
+            <element>hp_environment</element>
+            <hint/>
+            <inactive>false</inactive>
+            <label>HP Regression</label>
+            <language>en</language>
+            <name>x_hpmms_hp_daas_co_hp_outbound_integration</name>
+            <sequence>2</sequence>
+            <synonyms/>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2021-03-29 14:25:24</sys_created_on>
+            <sys_domain>global</sys_domain>
+            <sys_domain_path>/</sys_domain_path>
+            <sys_id>6910e3ff070720105b77ff4c7c1ed059</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2021-03-29 14:25:24</sys_updated_on>
+            <value>hpregression</value>
+        </sys_choice>
+        <sys_choice action="INSERT_OR_UPDATE">
+            <dependent_value/>
+            <element>hp_environment</element>
+            <hint/>
+            <inactive>false</inactive>
+            <label>HP Production</label>
+            <language>en</language>
+            <name>x_hpmms_hp_daas_co_hp_outbound_integration</name>
+            <sequence>3</sequence>
+            <synonyms/>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2021-03-29 14:25:24</sys_created_on>
+            <sys_domain>global</sys_domain>
+            <sys_domain_path>/</sys_domain_path>
+            <sys_id>e910e3ff070720105b77ff4c7c1ed05a</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2021-03-29 14:25:24</sys_updated_on>
+            <value>hp</value>
+        </sys_choice>
+    </sys_choice>
+</record_update>

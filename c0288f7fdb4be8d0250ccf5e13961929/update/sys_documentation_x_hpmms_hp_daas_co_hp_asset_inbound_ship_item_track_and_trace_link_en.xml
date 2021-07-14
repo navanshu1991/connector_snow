@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update>
+    <sys_documentation element="ship_item_track_and_trace_link" label="Ship Item Tracking Link" language="en" table="x_hpmms_hp_daas_co_hp_asset_inbound">
+        <sys_documentation action="INSERT_OR_UPDATE">
+            <element>ship_item_track_and_trace_link</element>
+            <help/>
+            <hint/>
+            <label>Ship Item Tracking Link</label>
+            <language>en</language>
+            <name>x_hpmms_hp_daas_co_hp_asset_inbound</name>
+            <plural>Ship Item Tracking Links</plural>
+            <sys_class_name>sys_documentation</sys_class_name>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2021-07-12 10:17:30</sys_created_on>
+            <sys_id>4e4617e51bd1301099dc404cbc4bcb32</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_name>Ship Item Tracking Link</sys_name>
+            <sys_package display_value="HP DaaS Connector" source="x_hpmms_hp_daas_co">c0288f7fdb4be8d0250ccf5e13961929</sys_package>
+            <sys_policy/>
+            <sys_scope display_value="HP DaaS Connector">c0288f7fdb4be8d0250ccf5e13961929</sys_scope>
+            <sys_update_name>sys_documentation_x_hpmms_hp_daas_co_hp_asset_inbound_ship_item_track_and_trace_link_en</sys_update_name>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2021-07-12 10:17:30</sys_updated_on>
+            <url/>
+            <url_target/>
+        </sys_documentation>
+    </sys_documentation>
+</record_update>

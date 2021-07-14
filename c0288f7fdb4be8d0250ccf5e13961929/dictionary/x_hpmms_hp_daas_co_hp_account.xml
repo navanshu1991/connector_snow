@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?><database>
+    <element label="HP Integration Account" max_length="40" name="x_hpmms_hp_daas_co_hp_account" sizeclass="3" type="collection">
+        <element label="Asset Load Failure" max_length="40" name="asset_load_failure" type="boolean"/>
+        <element attributes="encode_utf8=false" default="c8b3508e1b11701099dc404cbc4bcb70" label="Asset Load Schedule" max_length="32" name="asset_load_schedule" reference="sysauto_script" reference_qual="sys_scope=c0288f7fdb4be8d0250ccf5e13961929^run_type=periodically^EQ" reference_qual_condition="sys_scope=c0288f7fdb4be8d0250ccf5e13961929^run_type=periodically^EQ" type="reference"/>
+        <element label="Customer ID" mandatory="true" max_length="40" name="customer_id" type="string"/>
+        <element label="Customer Name" mandatory="true" max_length="40" name="customer_name" type="string"/>
+        <element dependent="table_name" dependent_on_field="table_name" label="Customer Ticket Field" max_length="80" name="cust_tic_num_field" type="field_name" use_dependent_field="true"/>
+        <element active="false" label="Enable Attachments for Create" max_length="40" name="enable_create_attachments" type="boolean"/>
+        <element label="Enable Inbound Attachments" max_length="40" name="enable_inbound_attachments" type="boolean"/>
+        <element active="false" label="Enable Attachments for Update" max_length="40" name="enable_update_attachments" type="boolean"/>
+        <element attributes="edge_encryption_enabled=true" label="End Date Time" max_length="40" name="end_date_time" type="glide_date_time"/>
+        <element label="Exclude Consumables" max_length="40" name="exclude_consumables" type="boolean"/>
+        <element dependent="table_name" dependent_on_field="table_name" label="HP Case Field" max_length="80" name="hp_case_field" type="field_name" use_dependent_field="true"/>
+        <element label="Initial Load Triggered" max_length="40" name="init_load_complete" type="boolean"/>
+        <element attributes="edge_encryption_enabled=true" choice="3" default="case_integration" label="Integration" mandatory="true" max_length="40" name="integration" type="string">
+            <choice>
+                <element inactive_on_update="false" label="Case Integration" sequence="0" value="case_integration"/>
+                <element inactive_on_update="false" label="Asset Integration" sequence="1" value="asset_integration"/>
+                <element inactive_on_update="false" label="Service Request Integration" sequence="2" value="service_request_integration"/>
+            </choice>
+        </element>
+        <element calculation="(function calculatedFieldValue(current) {&#13;&#10;&#13;&#10;&#9;return current.customer_name.getDisplayValue() + ': ' + current.integration.getDisplayValue();  // return the calculated value&#13;&#10;&#13;&#10;})(current);" display="true" label="Name" max_length="100" name="name" read_only="true" type="string" unique="true" virtual="true"/>
+        <element attributes="edge_encryption_enabled=true" label="Start Date Time" max_length="40" name="start_date_time" type="glide_date_time"/>
+        <element attributes="base_start=true" label="Table Name" max_length="80" name="table_name" type="table_name"/>
+        <index name="index">
+            <element name="name"/>
+        </index>
+        <index name="index2">
+            <element name="asset_load_schedule"/>
+        </index>
+    </element>
+</database>

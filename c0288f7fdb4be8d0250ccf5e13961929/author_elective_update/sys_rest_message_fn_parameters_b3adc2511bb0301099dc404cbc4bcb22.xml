@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_rest_message_fn_parameters">
+    <sys_rest_message_fn_parameters action="DELETE">
+        <name>instanceName</name>
+        <rest_message_function display_value="Reopen/Cancel Case">6256e1d11b30301099dc404cbc4bcbe1</rest_message_function>
+        <sys_class_name>sys_rest_message_fn_parameters</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2021-06-16 13:50:41</sys_created_on>
+        <sys_id>b3adc2511bb0301099dc404cbc4bcb22</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>instanceName</sys_name>
+        <sys_package display_value="HP DaaS Connector" source="x_hpmms_hp_daas_co">c0288f7fdb4be8d0250ccf5e13961929</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="HP DaaS Connector">c0288f7fdb4be8d0250ccf5e13961929</sys_scope>
+        <sys_update_name>sys_rest_message_fn_parameters_b3adc2511bb0301099dc404cbc4bcb22</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2021-06-16 13:50:41</sys_updated_on>
+        <type>string</type>
+        <value/>
+    </sys_rest_message_fn_parameters>
+    <sys_update_version action="INSERT_OR_UPDATE">
+        <action>DELETE</action>
+        <application display_value="HP DaaS Connector">c0288f7fdb4be8d0250ccf5e13961929</application>
+        <file_path/>
+        <instance_id>f86ea8ecdbaf93c4b2e05d00cf961997</instance_id>
+        <instance_name>dev66788</instance_name>
+        <name>sys_rest_message_fn_parameters_b3adc2511bb0301099dc404cbc4bcb22</name>
+        <payload><![CDATA[<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_rest_message_fn_parameters"><sys_rest_message_fn_parameters action="INSERT_OR_UPDATE"><name>instanceName</name><rest_message_function display_value="Reopen/Cancel Case">6256e1d11b30301099dc404cbc4bcbe1</rest_message_function><sys_class_name>sys_rest_message_fn_parameters</sys_class_name><sys_created_by>admin</sys_created_by><sys_created_on>2021-06-16 13:50:41</sys_created_on><sys_id>b3adc2511bb0301099dc404cbc4bcb22</sys_id><sys_mod_count>0</sys_mod_count><sys_name>instanceName</sys_name><sys_package display_value="HP DaaS Connector" source="x_hpmms_hp_daas_co">c0288f7fdb4be8d0250ccf5e13961929</sys_package><sys_policy/><sys_scope display_value="HP DaaS Connector">c0288f7fdb4be8d0250ccf5e13961929</sys_scope><sys_update_name>sys_rest_message_fn_parameters_b3adc2511bb0301099dc404cbc4bcb22</sys_update_name><sys_updated_by>admin</sys_updated_by><sys_updated_on>2021-06-16 13:50:41</sys_updated_on><type>string</type><value/></sys_rest_message_fn_parameters></record_update>]]></payload>
+        <payload_hash>314532476</payload_hash>
+        <record_name>instanceName</record_name>
+        <reverted_from/>
+        <source>93db4fff07c320105b77ff4c7c1ed0b9</source>
+        <source_table>sys_update_set</source_table>
+        <state>previous</state>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2021-06-16 13:50:41</sys_created_on>
+        <sys_id>1fbd46111bb0301099dc404cbc4bcbed</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_recorded_at>17a15169bb70000001</sys_recorded_at>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2021-06-16 13:50:41</sys_updated_on>
+        <type>Variable Substitutions</type>
+        <update_guid>57bd46119eb03010792dfa4622c17ced</update_guid>
+        <update_guid_history>57bd46119eb03010792dfa4622c17ced:314532476</update_guid_history>
+    </sys_update_version>
+    <sys_metadata_delete action="INSERT_OR_UPDATE">
+        <sys_audit_delete/>
+        <sys_class_name>sys_metadata_delete</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2021-06-17 08:19:30</sys_created_on>
+        <sys_db_object display_value="" name="sys_rest_message_fn_parameters">sys_rest_message_fn_parameters</sys_db_object>
+        <sys_id>4da191ee5b5c41309ea7b636ab426424</sys_id>
+        <sys_metadata>b3adc2511bb0301099dc404cbc4bcb22</sys_metadata>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>instanceName</sys_name>
+        <sys_package display_value="HP DaaS Connector" source="x_hpmms_hp_daas_co">c0288f7fdb4be8d0250ccf5e13961929</sys_package>
+        <sys_parent display_value="Reopen Case">6256e1d11b30301099dc404cbc4bcbe1</sys_parent>
+        <sys_policy/>
+        <sys_scope display_value="HP DaaS Connector">c0288f7fdb4be8d0250ccf5e13961929</sys_scope>
+        <sys_scope_delete display_value="">5d875586c98148cab39ce3dbb76b5184</sys_scope_delete>
+        <sys_update_name>sys_rest_message_fn_parameters_b3adc2511bb0301099dc404cbc4bcb22</sys_update_name>
+        <sys_update_version display_value="sys_rest_message_fn_parameters_b3adc2511bb0301099dc404cbc4bcb22">1fbd46111bb0301099dc404cbc4bcbed</sys_update_version>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2021-06-17 08:19:30</sys_updated_on>
+    </sys_metadata_delete>
+</record_update>

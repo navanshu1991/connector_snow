@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>package_private</access>
+        <active>true</active>
+        <api_name>x_hpmms_hp_daas_co.HPAssetTrigger</api_name>
+        <caller_access/>
+        <client_callable>false</client_callable>
+        <description/>
+        <name>HPAssetTrigger</name>
+        <script><![CDATA[var HPAssetTrigger = Class.create();
+HPAssetTrigger.prototype = {
+    initialize: function() {
+        this.logger = new Logger('HP Asset Trigger');
+    },
+
+    /**
+    * This function will be called from the scheduled job
+	* This going to iterate to all HP Account records where integration is selected as Asset Integration and call the event to make a call to HP API
+    */
+    scheduledJobLoad: function() {
+        try {
+            //Get the HP Accounts which have asset integration
+            var hpIntgAccGR = new GlideRecord('x_hpmms_hp_daas_co_hp_account');
+            hpIntgAccGR.addEncodedQuery('integration=asset_integration');
+            hpIntgAccGR.query();
+
+            while (hpIntgAccGR.next()) {
+                //Get the start and end date from the Job
+                //Set value on the Glide Record, do not update and pass it to the event for execution
+                var endTime = new GlideDateTime();
+                var durationValue = hpIntgAccGR.asset_load_schedule.run_period.toString();
+                var difference = new GlideDateTime(durationValue).getNumericValue();
+                var startTime = new GlideDateTime();
+                startTime.subtract(difference);
+
+                //Set Values on the GlideRecord object before passing it on to the event
+                hpIntgAccGR.setValue('start_date_time', startTime.getValue());
+                hpIntgAccGR.setValue('end_date_time', endTime.getValue());
+
+                //Call the event to do the job
+                gs.eventQueueScheduled('x_hpmms_hp_daas_co.get_assets', hpIntgAccGR, '1', 'HP Asset Outbound API - Get Assets: x_hpmms_hp_daas_co_hp_account', this._addDelay);
+                if (!hpIntgAccGR.exclude_consumables) {
+                    gs.eventQueueScheduled('x_hpmms_hp_daas_co.get_assets', hpIntgAccGR, '1', 'HP Consumable Outbound API - Get Consumables: x_hpmms_hp_daas_co_hp_account', this._addDelay);
+                }
+            }
+        } catch (exception) {
+            this.logger.error('Error in scheduledJobLoad => \n' + exception.toString());
+        }
+    },
+
+	/**
+	* Initial Asset Load Function, called from a UI Action
+	* fires event to make calls to HP Asset/Consumable API
+	*/
+    initializeAssetLoad: function(hpIntgAccGR) {
+        try {
+            //Check for the Asset Load complete
+            if (hpIntgAccGR.init_load_complete) return;
+
+            //If this is not done or we are re-triggering it, we set the failure property to false
+            hpIntgAccGR.asset_load_failure = false;
+            hpIntgAccGR.init_load_complete = true; //We set it true immediately
+            hpIntgAccGR.update();
+
+            //Call the event to do the job
+            gs.eventQueueScheduled('x_hpmms_hp_daas_co.get_assets', hpIntgAccGR, '1', 'HP Asset Outbound API - Get Assets: x_hpmms_hp_daas_co_hp_account', this._addDelay);
+            if (!hpIntgAccGR.exclude_consumables) {
+                gs.eventQueueScheduled('x_hpmms_hp_daas_co.get_assets', hpIntgAccGR, '1', 'HP Consumable Outbound API - Get Consumables: x_hpmms_hp_daas_co_hp_account', this._addDelay);
+            }
+        } catch (exception) {
+            this.logger.error('Error in initializeAssetLoad => \n' + exception.toString());
+            gs.addErrorMessage('Error in Initialise Asset Load');
+        }
+    },
+
+    /** 
+     * Private Function
+     * Function to generate a delay to be used while calling events
+     * @returns - a GlideDateTime object of value 10 seconds
+     */
+    _addDelay: function() {
+        var when = new GlideDateTime();
+        var delay = new GlideTime();
+        delay.setValue("00:00:15");
+        when.add(delay);
+        return when;
+    },
+
+    /**
+     * This function will always be called from the event
+     */
+    executeEvent: function(hpIntgAcc, pageNum, configName) {
+        try {
+            var outBoundIntg = new OutboundIntegration(configName, hpIntgAcc);
+            var data = outBoundIntg.generatePayload();
+            if (!data) throw new Error('Error in generating parameters for API Config ' + configName);
+            var response = outBoundIntg.invokeAPI(data);
+
+            if (!response.httpStatus || !response.body) throw new Error('Unexpected payload from ' + name + ' API');
+
+            if (response.httpStatus >= 400 && response.httpStatus < 500) {
+                //The result object will be returned, but we will anyway log the error
+                throw new Error('API returned an error => ' + JSON.stringify(response));
+            } else if (response.httpStatus >= 200 && response.httpStatus < 300) {
+                //Process the data from the API Call
+                if (this._isConsumableConfig()) this.processConsumableResponse(response.body.result);
+                if (this._isAssetConfig()) this.processAssetResponse(response.body.result);
+                //Check if there is a need to fire another event
+                if (!response.body.result.nextPageNumber || response.body.result.nextPageNumber == pageNum) return; //No need to add any further events
+                //Success response, we will fire another event, after the delay of 30 seconds
+                gs.eventQueueScheduled('x_hpmms_hp_daas_co.get_assets', hpIntgAccGR, response.body.result.nextPageNumber, configName, this._addDelay);
+
+            } else {
+                //Most likely an Internal server error
+                throw new Error('Unexpected Response from ' + configName + ' API');
+            }
+        } catch (exception) {
+            //Set the failure property here
+            hpIntgAcc.asset_load_failure = true;
+            hpIntgAcc.update();
+            this.logger.error('Error at executeEvent => ' + exception.toString());
+            throw exception;
+        }
+    },
+
+    /**
+     * Function to process the Assets returned from the response
+     */
+    processAssetResponse: function(result) {
+        try {
+            if (!result || !result.devices) throw new Error('Unexpected Payload, devices array not found');
+
+            for (var i = 0; result.devices.length; i++) {
+                new InboundHPAsset(result.devices[i], 'SYNC').processInboundData();
+            }
+
+        } catch (exception) {
+            this.logger.error('Error in processAssetResponse => ' + exception.toString());
+            throw exception;
+        }
+    },
+
+    /**
+     * Function to process the Consumables returned from the response
+     */
+    processConsumableResponse: function(result) {
+        try {
+            if (!result || !result.consumables) throw new Error('Unexpected Payload, consumables array not found');
+
+            for (var i = 0; result.consumables.length; i++) {
+                new InboundHPAsset(result.consumables[i], 'SYNC').processInboundData();
+            }
+
+        } catch (exception) {
+            this.logger.error('Error in processConsumableResponse => ' + exception.toString());
+            throw exception;
+        }
+    },
+
+    runScheduledJob: function(scheduledJob, runAs) {
+        try {
+            //Check if a Glide Record is being passed
+            if (typeof scheduledJob == 'object') {
+                scheduledJob.run_as = runAs ? runAs : gs.getUserID(); //sys_id of the user
+                scheduledJob.update();
+            } else {
+                //We assume that it is a sys id and retrieve object 
+                var scheduledJobGR = new GlideRecord('sysauto_script');
+                var isPresent = scheduledJobGR.get(scheduledJob);
+
+                if (isPresent) {
+                    scheduledJobGR.run_as = runAs ? runAs : gs.getUserID(); //sys_id of the user
+                    scheduledJobGR.update();
+                } else {
+                    throw new Error(scheduledJob + ' is not a valid Scheduled Job sys_id');
+                }
+            }
+            gs.executeNow(scheduledJob);
+        } catch (exception) {
+            this.logger.error('Error in runScheduledJob => \n' + exception.toString());
+        }
+    },
+
+    /**
+     * Private function
+     * Function to check if a given name is a Asset Configuration or not
+     * @param {string}
+     * @returns boolean
+     */
+    _isAssetConfig: function(name) {
+        return name == 'HP Asset Outbound API - Get Assets: x_hpmms_hp_daas_co_hp_account';
+    },
+
+    /**
+     * Private function
+     * Function to check if a given name is a Consumable Configuration or not
+     * @param {string}
+     * @returns boolean
+     */
+    _isConsumableConfig: function(name) {
+        return name == 'HP Consumable Outbound API - Get Consumables: x_hpmms_hp_daas_co_hp_account';
+    },
+
+    type: 'HPAssetTrigger'
+};]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2021-07-12 07:13:47</sys_created_on>
+        <sys_id>b01ceaed1b11301099dc404cbc4bcbec</sys_id>
+        <sys_mod_count>16</sys_mod_count>
+        <sys_name>HPAssetTrigger</sys_name>
+        <sys_package display_value="HP DaaS Connector" source="x_hpmms_hp_daas_co">c0288f7fdb4be8d0250ccf5e13961929</sys_package>
+        <sys_policy>read</sys_policy>
+        <sys_scope display_value="HP DaaS Connector">c0288f7fdb4be8d0250ccf5e13961929</sys_scope>
+        <sys_update_name>sys_script_include_b01ceaed1b11301099dc404cbc4bcbec</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2021-07-14 10:12:04</sys_updated_on>
+    </sys_script_include>
+</record_update>

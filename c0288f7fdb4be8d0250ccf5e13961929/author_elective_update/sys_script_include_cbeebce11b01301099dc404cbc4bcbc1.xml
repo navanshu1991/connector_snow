@@ -1,0 +1,415 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+    <sys_script_include action="DELETE">
+        <access>package_private</access>
+        <active>true</active>
+        <api_name>x_hpmms_hp_daas_co.OutboundIntegration</api_name>
+        <caller_access/>
+        <client_callable>false</client_callable>
+        <description/>
+        <name>OutboundIntegration</name>
+        <script><![CDATA[var OutboundIntegration = Class.create();
+OutboundIntegration.prototype = {
+
+    /**
+     * This function is used to initialise an outbound integration
+     * @param {string} name 
+     * @param {object} input 
+     */
+    initialize: function(name, input) {
+        this.name = name;
+        this.input = input;
+        //Get the integration GlideRecord
+        this.intgGR = this._getIntegrationGlide();
+        this.restMessage = this.intgGR.rest_message.getDisplayValue();
+        this.restMethod = this.intgGR.rest_method.getDisplayValue();
+        this.instanceName = this.intgGR.getValue('hp_environment');
+        this.type = this.intgGR.getValue('api_type');
+        this.logger = new Logger('Outbound Integration: ' + name);
+    },
+
+    /**
+     * This function generates the paylaod to be sent to HP API
+     * @returns object
+     */
+    generatePayload: function() {
+        try {
+            //Go through the field maps
+            var fieldMapGR = new GlideRecord('x_hpmms_hp_daas_co_outbound_field_map');
+            fieldMapGR.addActiveQuery();
+            fieldMapGR.addQuery('hp_outbound_intg', this.intgGR.getValue('sys_id'));
+            fieldMapGR.query();
+
+            var payload = {};
+
+            while(fieldMapGR.next()) {
+                var outboundFm = new OutboundFieldMap(this.intgGR, fieldMapGR, this.input);
+                _addToPayload(payload, outboundFm.runFieldMap());
+            }
+
+            this.logger.debug('Payload Generated: \n' + JSON.stringify(payload));
+            return payload;
+
+        } catch (exception) {
+            this.logger.error('Error in generatePayload => \n' + exception.toString());
+            throw exception;
+        }
+    },
+
+    /**
+     * Function to invoke the HP API with the passed input, this can be a get/post call
+     * @param {object} inputData 
+     * @returns response from the API: TODO: Evaluate if we can make this boolean
+     */
+    invokeAPI: function(inputData) {
+        //Get the Access token
+        try {
+            var accessToken = this._getAccessToken();
+            this.logger.info('Access token fetched successfully!');
+            this.logger.debug('Access token fetched => ' + accessToken);
+            var restService = new OutboundRest(this.restMessage, this.restMethod, this.instanceName, 300000, accessToken);
+            if(this.type == 'get') {
+                restService.setRequestQueryParams(inputData);
+            } else if (this.type == 'post') {
+                restService.setRequestBody(inputData);
+            }
+
+            return restService.getResponse();
+
+        } catch (exception) {
+            this.logger.error('Error in invokeAPI =>\n' + exception.toString());
+            throw exception;
+        }
+    },
+
+    /**
+     * Private Function
+     * When field map returns an object with key-value pair, this function will add that to the payload
+     * @param {object} payload 
+     * @param {object} object 
+     * @returns 
+     */
+    _addToPayload: function(payload, object) {
+
+        this.logger.debug('Adding object to the payload => \n' + JSON.stringify(object));
+        //Validate the object
+        if(global.JSUtil.nil(object.key)) return;//TODO: Throw exception of invalid key, empty/null values are allowed
+
+        if(object.key.indexOf('.') == -1) {
+            payload[object.key] = object.value;
+        } else {
+            //Get into the array
+            var keyArr = object.key.split('.');
+            var currentObject = payload;
+            for(var i = 0; i < keyArr.length - 1; i++) {
+                var key = keyArr[i];
+                //If the key value is empty or a non-object
+                if(global.JSUtil.nil(currentObject[key]) || typeof currentObject[key] != 'object') {
+                    this.logger.debug('Initializing ' + key);
+                    currentObject[key] = {};
+                }
+                currentObject = currentObject[key];
+            }
+            //At the end of the loop, we arrive at the last element
+            this.logger.debug('Adding value to ' + keyArr[keyArr.length - 1]);
+            currentObject[keyArr[keyArr.length - 1]] = object.value;
+        }
+    },
+
+    /**
+     * Private Function
+     * This function fetches the GlideRecord Object of a configuration
+     * @returns object
+     */
+    _getIntegrationGlide: function () {
+        var integrationGR = new GlideRecord('x_hpmms_hp_daas_co_hp_outbound_integration');
+
+        var isPresent = integrationGR.get('title', this.name);
+
+        if(!isPresent) {
+            var errMsg = 'No Outbound Integration defined with name ' + this.name;
+            this.logger.error(errMsg);
+            throw new Error(errMsg);
+        }
+         
+
+        return integrationGR;
+    },
+
+    /**
+     * Private Function
+     * This function returns an access token which can be further sent in a request
+     * @returns string
+     */
+    _getAccessToken: function() {
+        //Fetch all the details from integration to get all the details
+        var encrypter = new GlideEncrypter(); 
+
+        var userName = this.intgGR.auth_profile.username.toString();
+        var password = encrypter.decrypt(this.intgGR.auth_profile.password);
+        var clientKey = this.intgGR.oauth_entity.client_id.toString();
+        var clientSecret = encrypter.decrypt(this.intgGR.oauth_entity.client_secret);
+        var endpoint = this.intgGR.oauth_entity.token_url.toString();
+
+        var tokenRequest = 'grant_type=password&username=' + userName + '&password=' + password + '&scope=&client_id=' + clientKey + '&client_secret=' + clientSecret;
+        this.logger.debug('Access Token Request Body => \n' + tokenRequest);
+
+        try {
+            var webService = new sn_ws.RESTMessageV2();
+            webService.setEndpoint(endpoint);
+            webService.setHttpMethod("post");
+            webService.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            webService.setRequestBody(tokenRequest);
+            webService.setHttpTimeout(60000);
+    
+            var response = webService.execute();
+            this.logger.info('Access Token Response => \n' + response.getBody());
+            var responseBody = JSON.parse(response.getBody());
+
+            if(globalThis.JSUtil.nil(responseBody.access_token)) {
+                var errMsg = 'Error in retrieving the Access Token from HP. Error => ' + response.getBody();
+                this.logger.error(errMsg);
+                throw new Error(errMsg);
+            }
+            
+            return responseBody.access_token;
+
+        } catch (exception) {
+            this.logger.error('Error in _getAccessToken =>\n' + exception.toString());
+            throw exception;
+        }
+    },
+
+    type: 'OutboundIntegration'
+};]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2021-06-29 13:00:31</sys_created_on>
+        <sys_id>cbeebce11b01301099dc404cbc4bcbc1</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>OutboundIntegration</sys_name>
+        <sys_package display_value="HP DaaS Connector" source="x_hpmms_hp_daas_co">c0288f7fdb4be8d0250ccf5e13961929</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="HP DaaS Connector">c0288f7fdb4be8d0250ccf5e13961929</sys_scope>
+        <sys_update_name>sys_script_include_cbeebce11b01301099dc404cbc4bcbc1</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2021-06-29 13:00:31</sys_updated_on>
+    </sys_script_include>
+    <sys_update_version action="INSERT_OR_UPDATE">
+        <action>DELETE</action>
+        <application display_value="HP DaaS Connector">c0288f7fdb4be8d0250ccf5e13961929</application>
+        <file_path/>
+        <instance_id>f86ea8ecdbaf93c4b2e05d00cf961997</instance_id>
+        <instance_name>dev66788</instance_name>
+        <name>sys_script_include_cbeebce11b01301099dc404cbc4bcbc1</name>
+        <payload>&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;record_update table="sys_script_include"&gt;&lt;sys_script_include action="INSERT_OR_UPDATE"&gt;&lt;access&gt;package_private&lt;/access&gt;&lt;active&gt;true&lt;/active&gt;&lt;api_name&gt;x_hpmms_hp_daas_co.OutboundIntegration&lt;/api_name&gt;&lt;caller_access/&gt;&lt;client_callable&gt;false&lt;/client_callable&gt;&lt;description/&gt;&lt;name&gt;OutboundIntegration&lt;/name&gt;&lt;script&gt;&lt;![CDATA[var OutboundIntegration = Class.create();
+OutboundIntegration.prototype = {
+
+    /**
+     * This function is used to initialise an outbound integration
+     * @param {string} name 
+     * @param {object} input 
+     */
+    initialize: function(name, input) {
+        this.name = name;
+        this.input = input;
+        //Get the integration GlideRecord
+        this.intgGR = this._getIntegrationGlide();
+        this.restMessage = this.intgGR.rest_message.getDisplayValue();
+        this.restMethod = this.intgGR.rest_method.getDisplayValue();
+        this.instanceName = this.intgGR.getValue('hp_environment');
+        this.type = this.intgGR.getValue('api_type');
+        this.logger = new Logger('Outbound Integration: ' + name);
+    },
+
+    /**
+     * This function generates the paylaod to be sent to HP API
+     * @returns object
+     */
+    generatePayload: function() {
+        try {
+            //Go through the field maps
+            var fieldMapGR = new GlideRecord('x_hpmms_hp_daas_co_outbound_field_map');
+            fieldMapGR.addActiveQuery();
+            fieldMapGR.addQuery('hp_outbound_intg', this.intgGR.getValue('sys_id'));
+            fieldMapGR.query();
+
+            var payload = {};
+
+            while(fieldMapGR.next()) {
+                var outboundFm = new OutboundFieldMap(this.intgGR, fieldMapGR, this.input);
+                _addToPayload(payload, outboundFm.runFieldMap());
+            }
+
+            this.logger.debug('Payload Generated: \n' + JSON.stringify(payload));
+            return payload;
+
+        } catch (exception) {
+            this.logger.error('Error in generatePayload =&gt; \n' + exception.toString());
+            throw exception;
+        }
+    },
+
+    /**
+     * Function to invoke the HP API with the passed input, this can be a get/post call
+     * @param {object} inputData 
+     * @returns response from the API: TODO: Evaluate if we can make this boolean
+     */
+    invokeAPI: function(inputData) {
+        //Get the Access token
+        try {
+            var accessToken = this._getAccessToken();
+            this.logger.info('Access token fetched successfully!');
+            this.logger.debug('Access token fetched =&gt; ' + accessToken);
+            var restService = new OutboundRest(this.restMessage, this.restMethod, this.instanceName, 300000, accessToken);
+            if(this.type == 'get') {
+                restService.setRequestQueryParams(inputData);
+            } else if (this.type == 'post') {
+                restService.setRequestBody(inputData);
+            }
+
+            return restService.getResponse();
+
+        } catch (exception) {
+            this.logger.error('Error in invokeAPI =&gt;\n' + exception.toString());
+            throw exception;
+        }
+    },
+
+    /**
+     * Private Function
+     * When field map returns an object with key-value pair, this function will add that to the payload
+     * @param {object} payload 
+     * @param {object} object 
+     * @returns 
+     */
+    _addToPayload: function(payload, object) {
+
+        this.logger.debug('Adding object to the payload =&gt; \n' + JSON.stringify(object));
+        //Validate the object
+        if(global.JSUtil.nil(object.key)) return;//TODO: Throw exception of invalid key, empty/null values are allowed
+
+        if(object.key.indexOf('.') == -1) {
+            payload[object.key] = object.value;
+        } else {
+            //Get into the array
+            var keyArr = object.key.split('.');
+            var currentObject = payload;
+            for(var i = 0; i &lt; keyArr.length - 1; i++) {
+                var key = keyArr[i];
+                //If the key value is empty or a non-object
+                if(global.JSUtil.nil(currentObject[key]) || typeof currentObject[key] != 'object') {
+                    this.logger.debug('Initializing ' + key);
+                    currentObject[key] = {};
+                }
+                currentObject = currentObject[key];
+            }
+            //At the end of the loop, we arrive at the last element
+            this.logger.debug('Adding value to ' + keyArr[keyArr.length - 1]);
+            currentObject[keyArr[keyArr.length - 1]] = object.value;
+        }
+    },
+
+    /**
+     * Private Function
+     * This function fetches the GlideRecord Object of a configuration
+     * @returns object
+     */
+    _getIntegrationGlide: function () {
+        var integrationGR = new GlideRecord('x_hpmms_hp_daas_co_hp_outbound_integration');
+
+        var isPresent = integrationGR.get('title', this.name);
+
+        if(!isPresent) {
+            var errMsg = 'No Outbound Integration defined with name ' + this.name;
+            this.logger.error(errMsg);
+            throw new Error(errMsg);
+        }
+         
+
+        return integrationGR;
+    },
+
+    /**
+     * Private Function
+     * This function returns an access token which can be further sent in a request
+     * @returns string
+     */
+    _getAccessToken: function() {
+        //Fetch all the details from integration to get all the details
+        var encrypter = new GlideEncrypter(); 
+
+        var userName = this.intgGR.auth_profile.username.toString();
+        var password = encrypter.decrypt(this.intgGR.auth_profile.password);
+        var clientKey = this.intgGR.oauth_entity.client_id.toString();
+        var clientSecret = encrypter.decrypt(this.intgGR.oauth_entity.client_secret);
+        var endpoint = this.intgGR.oauth_entity.token_url.toString();
+
+        var tokenRequest = 'grant_type=password&amp;username=' + userName + '&amp;password=' + password + '&amp;scope=&amp;client_id=' + clientKey + '&amp;client_secret=' + clientSecret;
+        this.logger.debug('Access Token Request Body =&gt; \n' + tokenRequest);
+
+        try {
+            var webService = new sn_ws.RESTMessageV2();
+            webService.setEndpoint(endpoint);
+            webService.setHttpMethod("post");
+            webService.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            webService.setRequestBody(tokenRequest);
+            webService.setHttpTimeout(60000);
+    
+            var response = webService.execute();
+            this.logger.info('Access Token Response =&gt; \n' + response.getBody());
+            var responseBody = JSON.parse(response.getBody());
+
+            if(globalThis.JSUtil.nil(responseBody.access_token)) {
+                var errMsg = 'Error in retrieving the Access Token from HP. Error =&gt; ' + response.getBody();
+                this.logger.error(errMsg);
+                throw new Error(errMsg);
+            }
+            
+            return responseBody.access_token;
+
+        } catch (exception) {
+            this.logger.error('Error in _getAccessToken =&gt;\n' + exception.toString());
+            throw exception;
+        }
+    },
+
+    type: 'OutboundIntegration'
+};]]&gt;&lt;/script&gt;&lt;sys_class_name&gt;sys_script_include&lt;/sys_class_name&gt;&lt;sys_created_by&gt;admin&lt;/sys_created_by&gt;&lt;sys_created_on&gt;2021-06-29 13:00:31&lt;/sys_created_on&gt;&lt;sys_id&gt;cbeebce11b01301099dc404cbc4bcbc1&lt;/sys_id&gt;&lt;sys_mod_count&gt;0&lt;/sys_mod_count&gt;&lt;sys_name&gt;OutboundIntegration&lt;/sys_name&gt;&lt;sys_package display_value="HP DaaS Connector" source="x_hpmms_hp_daas_co"&gt;c0288f7fdb4be8d0250ccf5e13961929&lt;/sys_package&gt;&lt;sys_policy/&gt;&lt;sys_scope display_value="HP DaaS Connector"&gt;c0288f7fdb4be8d0250ccf5e13961929&lt;/sys_scope&gt;&lt;sys_update_name&gt;sys_script_include_cbeebce11b01301099dc404cbc4bcbc1&lt;/sys_update_name&gt;&lt;sys_updated_by&gt;admin&lt;/sys_updated_by&gt;&lt;sys_updated_on&gt;2021-06-29 13:00:31&lt;/sys_updated_on&gt;&lt;/sys_script_include&gt;&lt;/record_update&gt;</payload>
+        <payload_hash>-1268624342</payload_hash>
+        <record_name>OutboundIntegration</record_name>
+        <reverted_from/>
+        <source>93db4fff07c320105b77ff4c7c1ed0b9</source>
+        <source_table>sys_update_set</source_table>
+        <state>previous</state>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2021-06-29 13:00:31</sys_created_on>
+        <sys_id>cbeef4251b01301099dc404cbc4bcba9</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_recorded_at>17a57db5b3a0000002</sys_recorded_at>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2021-06-29 13:00:31</sys_updated_on>
+        <type>Script Include</type>
+        <update_guid>c3eebce10e013010963a4e66bb3a67c5</update_guid>
+        <update_guid_history>c3eebce10e013010963a4e66bb3a67c5:-1268624342</update_guid_history>
+    </sys_update_version>
+    <sys_metadata_delete action="INSERT_OR_UPDATE">
+        <sys_audit_delete/>
+        <sys_class_name>sys_metadata_delete</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2021-06-29 13:03:41</sys_created_on>
+        <sys_db_object display_value="" name="sys_script_include">sys_script_include</sys_db_object>
+        <sys_id>42a32853e5d6453991efd27c328a3e19</sys_id>
+        <sys_metadata>cbeebce11b01301099dc404cbc4bcbc1</sys_metadata>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>OutboundIntegration</sys_name>
+        <sys_package display_value="HP DaaS Connector" source="x_hpmms_hp_daas_co">c0288f7fdb4be8d0250ccf5e13961929</sys_package>
+        <sys_parent/>
+        <sys_policy/>
+        <sys_scope display_value="HP DaaS Connector">c0288f7fdb4be8d0250ccf5e13961929</sys_scope>
+        <sys_scope_delete display_value="">5d875586c98148cab39ce3dbb76b5184</sys_scope_delete>
+        <sys_update_name>sys_script_include_cbeebce11b01301099dc404cbc4bcbc1</sys_update_name>
+        <sys_update_version display_value="sys_script_include_cbeebce11b01301099dc404cbc4bcbc1">cbeef4251b01301099dc404cbc4bcba9</sys_update_version>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2021-06-29 13:03:41</sys_updated_on>
+    </sys_metadata_delete>
+</record_update>

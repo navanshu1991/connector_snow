@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?><database>
+    <element extends="sys_import_set_row" label="HP Case Inbound" max_length="40" name="x_hpmms_hp_daas_co_hp_case_inbound" sizeclass="6" type="collection">
+        <element attributes="edge_encryption_enabled=true" label="HP Alt Contact Email" max_length="40" name="alt_contact_email" read_only="true" type="string"/>
+        <element attributes="edge_encryption_enabled=true" label="HP Alt Contact FName" max_length="40" name="alt_contact_first_name" read_only="true" type="string"/>
+        <element attributes="edge_encryption_enabled=true" label="HP Alt Contact LName" max_length="40" name="alt_contact_last_name" read_only="true" type="string"/>
+        <element attributes="edge_encryption_enabled=true" label="HP Alt Contact Phone" max_length="40" name="alt_contact_phone" read_only="true" type="string"/>
+        <element attributes="edge_encryption_enabled=true" label="HP Case Status" max_length="40" name="case_status" read_only="true" type="string"/>
+        <element attributes="edge_encryption_enabled=true" label="HP Case Category" max_length="40" name="category" read_only="true" type="string"/>
+        <element attributes="edge_encryption_enabled=true" label="HP Case Location City" max_length="40" name="city" read_only="true" type="string"/>
+        <element attributes="edge_encryption_enabled=true" label="HP Case Closed Date" max_length="40" name="closed_date" read_only="true" type="string"/>
+        <element attributes="edge_encryption_enabled=true" label="HP Contact Email" max_length="40" name="contact_email" read_only="true" type="string"/>
+        <element attributes="edge_encryption_enabled=true" label="HP Contact First Name" max_length="40" name="contact_first_name" read_only="true" type="string"/>
+        <element attributes="edge_encryption_enabled=true" label="HP Contact Last Name" max_length="40" name="contact_last_name" read_only="true" type="string"/>
+        <element attributes="edge_encryption_enabled=true" label="HP Contact Phone" max_length="40" name="contact_phone" read_only="true" type="string"/>
+        <element attributes="edge_encryption_enabled=true" label="HP Case Location Country" max_length="40" name="country" read_only="true" type="string"/>
+        <element attributes="edge_encryption_enabled=true" label="HP Reverse Case Created" max_length="40" name="created_on" read_only="true" type="string"/>
+        <element attributes="edge_encryption_enabled=true" label="Customer Ticket Number" max_length="40" name="customer_ticket_num" read_only="true" type="string"/>
+        <element attributes="edge_encryption_enabled=true" label="HP Description" max_length="4000" name="description" read_only="true" type="string"/>
+        <element attributes="edge_encryption_enabled=true" label="HP Account" max_length="40" name="hp_account" read_only="true" type="string"/>
+        <element attributes="edge_encryption_enabled=true" label="HP Case Created Time" max_length="40" name="hp_case_created" read_only="true" type="string"/>
+        <element attributes="edge_encryption_enabled=true" label="HP Case Number" max_length="40" name="hp_case_number" read_only="true" type="string"/>
+        <element attributes="edge_encryption_enabled=true" label="Message" max_length="40" name="message" read_only="true" type="string"/>
+        <element attributes="edge_encryption_enabled=true" default="javascript:getNextObjNumberPadded();" display="true" dynamic_default_value="fdcb83a85f220100a9ad2572f2b4773c" label="Number" max_length="40" name="number" read_only="true" type="string" use_dynamic_default="true"/>
+        <element attributes="edge_encryption_enabled=true" label="HP Part Description" max_length="40" name="part_description" read_only="true" type="string"/>
+        <element attributes="edge_encryption_enabled=true" label="HP Part Expected Delivery Date" max_length="40" name="part_expected_delv_date" read_only="true" type="string"/>
+        <element attributes="edge_encryption_enabled=true" label="HP Part Number" max_length="40" name="part_number" read_only="true" type="string"/>
+        <element attributes="edge_encryption_enabled=true" label="HP Resolution Code" max_length="40" name="resolution_code" read_only="true" type="string"/>
+        <element attributes="edge_encryption_enabled=true" label="HP Resolution Notes" max_length="4000" name="resolution_notes" read_only="true" type="string"/>
+        <element attributes="edge_encryption_enabled=true" label="HP Serial Number" max_length="40" name="serial_number" read_only="true" type="string"/>
+        <element attributes="edge_encryption_enabled=true" label="HP Short Description" max_length="300" name="short_description" read_only="true" type="string"/>
+        <element attributes="edge_encryption_enabled=true" label="HP Case Location Province" max_length="40" name="state" read_only="true" type="string"/>
+        <element attributes="edge_encryption_enabled=true" label="HP Case Location Street" max_length="40" name="street" read_only="true" type="string"/>
+        <element attributes="edge_encryption_enabled=true" label="Technician Notes" max_length="4000" name="technician_notes" read_only="true" type="string"/>
+        <element attributes="edge_encryption_enabled=true" label="Transaction Type" max_length="40" name="type" read_only="true" type="string"/>
+        <element attributes="edge_encryption_enabled=true" label="User Notes" max_length="4000" name="user_notes" read_only="true" type="string"/>
+        <element attributes="edge_encryption_enabled=true" label="HP Part Status Reason" max_length="40" name="u_string_14" read_only="true" type="string"/>
+        <element attributes="edge_encryption_enabled=true" label="HP Case Location Zip" max_length="40" name="zip" read_only="true" type="string"/>
+    </element>
+</database>

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>package_private</access>
+        <active>true</active>
+        <api_name>x_hpmms_hp_daas_co.Logger</api_name>
+        <caller_access/>
+        <client_callable>false</client_callable>
+        <description/>
+        <name>Logger</name>
+        <script><![CDATA[var Logger = Class.create();
+Logger.prototype = {
+    /**
+     * Initialize the logger with the given string
+     * This should be used in the class constructure where the logger is supposed to be used
+     * @param {string} source 
+     */
+    initialize: function (source) {
+        this.init = 'Source: ' + source + ' >>> ' + 'User ID: ' + gs.getUserName() + ' >>> \n';
+    },
+
+    /**
+     * Wrapper on info log
+     * @param {string} message 
+     */
+    info: function (message) {
+        gs.info(this.init + message);
+    },
+
+    /**
+     * Wrapper on error log
+     * @param {string} message 
+     */
+    error: function (message) {
+        gs.error(this.init + message);
+    },
+
+    /**
+     * Wrapper on debug log
+     * @param {string} message 
+     */
+    debug: function (message) {
+        if (this._isDeveloperMode)
+            gs.debug(this.init + message);
+    },
+
+    /**
+     * Private Function
+     * Returns true/false depending on whether the property is enabled or not
+     * @returns true/false
+     */
+    _isDeveloperMode: function () {
+        var propVal = gs.getProperty('x_hpmms_hp_daas_co.enable_dev_mode');
+        if (propVal == 'true') {
+            return true;
+        } else {
+            return false;
+        }
+    },
+
+    type: 'Logger'
+};]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2021-06-29 13:12:17</sys_created_on>
+        <sys_id>f781c1251b01301099dc404cbc4bcba7</sys_id>
+        <sys_mod_count>1</sys_mod_count>
+        <sys_name>Logger</sys_name>
+        <sys_package display_value="HP DaaS Connector" source="x_hpmms_hp_daas_co">c0288f7fdb4be8d0250ccf5e13961929</sys_package>
+        <sys_policy>read</sys_policy>
+        <sys_scope display_value="HP DaaS Connector">c0288f7fdb4be8d0250ccf5e13961929</sys_scope>
+        <sys_update_name>sys_script_include_f781c1251b01301099dc404cbc4bcba7</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2021-07-05 11:40:02</sys_updated_on>
+    </sys_script_include>
+</record_update>

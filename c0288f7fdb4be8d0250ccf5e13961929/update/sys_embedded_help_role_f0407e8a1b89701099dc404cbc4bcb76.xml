@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_embedded_help_role">
+    <sys_embedded_help_role action="INSERT_OR_UPDATE">
+        <order>1000</order>
+        <role display_value="x_hpmms_hp_daas_co.hp_outbound_trigger_user" name="x_hpmms_hp_daas_co.hp_outbound_trigger_user">3c4032461b89701099dc404cbc4bcb1d</role>
+        <sys_class_name>sys_embedded_help_role</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2021-07-01 10:32:40</sys_created_on>
+        <sys_id>f0407e8a1b89701099dc404cbc4bcb76</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>3c4032461b89701099dc404cbc4bcb1d</sys_name>
+        <sys_package display_value="HP DaaS Connector" source="x_hpmms_hp_daas_co">c0288f7fdb4be8d0250ccf5e13961929</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="HP DaaS Connector">c0288f7fdb4be8d0250ccf5e13961929</sys_scope>
+        <sys_update_name>sys_embedded_help_role_f0407e8a1b89701099dc404cbc4bcb76</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2021-07-01 10:32:40</sys_updated_on>
+    </sys_embedded_help_role>
+</record_update>

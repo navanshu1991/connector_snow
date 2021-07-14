@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>package_private</access>
+        <active>true</active>
+        <api_name>x_hpmms_hp_daas_co.HPCaseTrigger</api_name>
+        <caller_access/>
+        <client_callable>false</client_callable>
+        <description/>
+        <name>HPCaseTrigger</name>
+        <script><![CDATA[var HPCaseTrigger = Class.create();
+HPCaseTrigger.prototype = {
+    /**
+     * Trigger initialisation for case, this will be responsible to make case API calls to HP
+     * We need to pass the unique identifer at customer's end
+     * @param {object} input 
+     * @param {string} id
+     */
+    initialize: function(input, id) {
+        this.input = input;
+        if (this.input.isValidField(id)) this.id = id;
+        var tableName = input.getTableName();
+		this.tableName = tableName;
+        this.createCaseName = 'Create Case: ' + tableName;
+        this.updateCaseName = 'Update Case: ' + tableName;
+        this.cancelCaseName = 'Cancel Case: ' + tableName;
+        this.reopenCaseName = 'Reopen Case: ' + tableName;
+        this.sendAttachmentName = 'Send Attachment: ' + tableName;
+        this.logger = new Logger('HP Case Trigger');
+    },
+
+    /**
+     * Depending on the type of condition, this shall be executed
+     */
+    execute: function() {
+        var result = true;
+        try {
+            if (new OutboundIntegration(this.createCaseName, this.input).runCondition()) {
+                this._sendToHP(this.createCaseName);
+                gs.addInfoMessage('Create Case Request sent to HP Successfully!');
+            } else if (new OutboundIntegration(this.updateCaseName, this.input).runCondition()) {
+                this._sendToHP(this.updateCaseName);
+                gs.addInfoMessage('Update Case Request sent to HP Successfully!');
+            } else if (new OutboundIntegration(this.cancelCaseName, this.input).runCondition()) {
+                this._sendToHP(this.cancelCaseName);
+                gs.addInfoMessage('Cancel Case Request sent to HP Successfully!');
+            } else if (new OutboundIntegration(this.reopenCaseName, this.input).runCondition()) {
+                this._sendToHP(this.reopenCaseName);
+                gs.addInfoMessage('Re-open Case Request sent to HP Successfully!');
+            }
+        } catch (exception) {
+            this.logger.error('Error at execute => ' + exception.toString());
+            gs.addErrorMessage('Error while sending Case data to HP, please check logs for details');
+        }
+    },
+
+    /**
+     * This function will make the call to respective configuration
+     * @param {string} name 
+     */
+    _sendToHP: function(name) {
+        try {
+            var outBoundIntg = new OutboundIntegration(name, this.input);
+            var data = outBoundIntg.generatePayload();
+            if (!data) throw new Error('Error in generating payload for Case API');
+            var response = outBoundIntg.invokeAPI(data);
+
+            if (!response.httpStatus || !response.body) throw new Error('Unexpected payload from ' + name + ' API');
+
+            if (response.httpStatus >= 400 && response.httpStatus < 500) {
+                //The result object will be returned, but we will anyway log the error
+                this.logger.error('API returned an error => ' + JSON.stringify(response));
+                //To display the error, the message must be in the desired format
+                if (response.body && response.body.result && response.body.result.message) {
+                    gs.addErrorMessage('Case API Error: ' + response.body.result.message);
+                }
+                throw new Error('API returned an error => ' + JSON.stringify(response));
+            } else if (response.httpStatus >= 200 && response.httpStatus < 300) {
+                if (name == this.createCaseName) {
+                    //Add the customerTicket Number too
+                    if (this.id) response.body.customerTicketNumber = this.input.getValue(this.id);
+                    new InboundHPCase('SYNC', response.body).processInboundData();
+                }
+            } else {
+                //Most likely an Internal server error
+                throw new Error('Unexpected Response from ' + name + ' API');
+            }
+        } catch (exception) {
+            this.logger.error('Error at _sendToHP => ' + exception.toString());
+            throw exception;
+        }
+    },
+
+    type: 'HPCaseTrigger'
+};]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2021-07-01 11:09:06</sys_created_on>
+        <sys_id>5b88b2421bc9701099dc404cbc4bcb27</sys_id>
+        <sys_mod_count>15</sys_mod_count>
+        <sys_name>HPCaseTrigger</sys_name>
+        <sys_package display_value="HP DaaS Connector" source="x_hpmms_hp_daas_co">c0288f7fdb4be8d0250ccf5e13961929</sys_package>
+        <sys_policy>read</sys_policy>
+        <sys_scope display_value="HP DaaS Connector">c0288f7fdb4be8d0250ccf5e13961929</sys_scope>
+        <sys_update_name>sys_script_include_5b88b2421bc9701099dc404cbc4bcb27</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2021-07-12 05:26:16</sys_updated_on>
+    </sys_script_include>
+</record_update>
