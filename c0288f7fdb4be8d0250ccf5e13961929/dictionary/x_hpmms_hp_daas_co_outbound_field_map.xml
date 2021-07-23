@@ -5,7 +5,7 @@
         <element label="Allow Empty" max_length="40" name="allow_empty" type="boolean"/>
         <element attributes="edge_encryption_enabled=true" label="API Element" max_length="40" name="api_element" type="string"/>
         <element label="Description" max_length="255" name="description" type="string_full_utf8"/>
-        <element label="Dev Mode" max_length="40" name="dev_mode" read_only="true" type="boolean"/>
+        <element calculation="(function calculatedFieldValue(current) {&#13;&#10;&#13;&#10;&#9;return gs.getProperty('x_hpmms_hp_daas_co.enable_dev_mode') == 'true';&#13;&#10;&#13;&#10;})(current);" label="Dev Mode" max_length="40" name="dev_mode" read_only="true" type="boolean" virtual="true"/>
         <element label="Exclude from Execution" max_length="40" name="exclude" type="boolean"/>
         <element attributes="allow_null=true,allow_references=true" dependent="table" dependent_on_field="table" label="Field Name" max_length="80" name="field_name" type="field_name" use_dependent_field="true"/>
         <element attributes="encode_utf8=false" label="HP Outbound Integration" mandatory="true" max_length="32" name="hp_outbound_intg" reference="x_hpmms_hp_daas_co_hp_outbound_integration" type="reference"/>

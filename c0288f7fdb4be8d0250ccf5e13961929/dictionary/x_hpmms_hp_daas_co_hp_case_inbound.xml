@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><database>
-    <element extends="sys_import_set_row" label="HP Case Inbound" max_length="40" name="x_hpmms_hp_daas_co_hp_case_inbound" sizeclass="6" type="collection">
+    <element extends="sys_import_set_row" label="HP Case Inbound" max_length="40" name="x_hpmms_hp_daas_co_hp_case_inbound" sizeclass="1" type="collection">
         <element attributes="edge_encryption_enabled=true" label="HP Alt Contact Email" max_length="40" name="alt_contact_email" read_only="true" type="string"/>
         <element attributes="edge_encryption_enabled=true" label="HP Alt Contact FName" max_length="40" name="alt_contact_first_name" read_only="true" type="string"/>
         <element attributes="edge_encryption_enabled=true" label="HP Alt Contact LName" max_length="40" name="alt_contact_last_name" read_only="true" type="string"/>

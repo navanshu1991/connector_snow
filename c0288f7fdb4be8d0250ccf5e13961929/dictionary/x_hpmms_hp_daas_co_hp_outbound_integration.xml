@@ -9,7 +9,7 @@
         </element>
         <element attributes="encode_utf8=false" label="Authentication Profile" max_length="32" name="auth_profile" reference="sys_auth_profile_basic" type="reference"/>
         <element active="false" attributes="edge_encryption_enabled=true" label="Customer Account Names" max_length="40" name="customer_account_name" reference="x_hpmms_hp_daas_co_hp_account" type="glide_list"/>
-        <element label="Dev Mode" max_length="40" name="dev_mode" read_only="true" type="boolean"/>
+        <element calculation="(function calculatedFieldValue(current) {&#13;&#10;&#13;&#10;&#9;return gs.getProperty('x_hpmms_hp_daas_co.enable_dev_mode') == 'true';&#13;&#10;&#13;&#10;})(current);" label="Dev Mode" max_length="40" name="dev_mode" read_only="true" type="boolean" virtual="true"/>
         <element attributes="edge_encryption_enabled=true" choice="3" default="hpdev" label="HP Environment" max_length="40" name="hp_environment" type="string">
             <choice>
                 <element inactive_on_update="false" label="HP Dev" sequence="0" value="hpdev"/>
@@ -18,15 +18,15 @@
                 <element inactive_on_update="false" label="HP Production" sequence="3" value="hp"/>
             </choice>
         </element>
-        <element attributes="edge_encryption_enabled=true" label="Notification Email" max_length="40" name="notification_email" type="string"/>
+        <element active="false" attributes="edge_encryption_enabled=true" label="Notification Email" max_length="40" name="notification_email" type="string"/>
         <element attributes="edge_encryption_enabled=true" default="javascript:getNextObjNumberPadded();" dynamic_default_value="fdcb83a85f220100a9ad2572f2b4773c" label="Number" max_length="40" name="number" read_only="true" type="string" use_dynamic_default="true"/>
         <element attributes="encode_utf8=false" label="OAuth Entity" max_length="32" name="oauth_entity" reference="oauth_entity" type="reference"/>
         <element active="false" label="Process API Response" max_length="40" name="process_api_response" type="boolean"/>
         <element active="false" attributes="base_table=sys_import_set_row,skip_root=true" label="Response Table" max_length="80" name="response_table" type="table_name"/>
         <element attributes="encode_utf8=false" label="REST Message" max_length="32" name="rest_message" reference="sys_rest_message" type="reference"/>
         <element attributes="encode_utf8=false" label="REST Method" max_length="32" name="rest_method" reference="sys_rest_message_fn" reference_qual="javascript:'rest_message.sys_id=' + current.rest_message.sys_id;" type="reference" use_dependent_field="true" use_reference_qualifier="advanced"/>
-        <element default="3" label="Retry Count" max_length="40" name="retry_count" type="integer"/>
-        <element label="Retry Wait Time (In milliseconds)" max_length="40" name="retry_wait_time" type="integer"/>
+        <element active="false" default="3" label="Retry Count" max_length="40" name="retry_count" type="integer"/>
+        <element active="false" label="Retry Wait Time (In milliseconds)" max_length="40" name="retry_wait_time" type="integer"/>
         <element label="Table Name" max_length="80" name="table_name" type="table_name"/>
         <element attributes="edge_encryption_enabled=true" calculation="(function calculatedFieldValue(current) {&#13;&#10;&#13;&#10;&#9;return current.rest_message.getDisplayValue() + ' - ' + current.rest_method.getDisplayValue() + ': ' + current.table_name.getDisplayValue();&#13;&#10;&#13;&#10;})(current);" display="true" label="Title" mandatory="true" max_length="100" name="title" read_only="true" type="string" unique="true" virtual="true"/>
         <element dependent="table_name" dependent_on_field="table_name" label="Trigger Condition" max_length="4000" name="trigger_condition" type="conditions" use_dependent_field="true"/>

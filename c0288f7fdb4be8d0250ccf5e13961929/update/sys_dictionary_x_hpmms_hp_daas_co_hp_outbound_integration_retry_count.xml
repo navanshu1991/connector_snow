@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?><record_update>
     <sys_dictionary action="INSERT_OR_UPDATE" element="retry_count" table="x_hpmms_hp_daas_co_hp_outbound_integration">
-        <active>true</active>
+        <active>false</active>
         <array>false</array>
         <array_denormalized>false</array_denormalized>
         <attributes/>
         <audit>false</audit>
         <calculation/>
-        <choice>0</choice>
+        <choice/>
         <choice_field/>
         <choice_table/>
         <column_label>Retry Count</column_label>
@@ -49,14 +49,14 @@
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2021-03-29 14:25:22</sys_created_on>
         <sys_id>9110e3ff070720105b77ff4c7c1ed01d</sys_id>
-        <sys_mod_count>2</sys_mod_count>
+        <sys_mod_count>3</sys_mod_count>
         <sys_name>Retry Count</sys_name>
         <sys_package display_value="HP DaaS Connector" source="x_hpmms_hp_daas_co">c0288f7fdb4be8d0250ccf5e13961929</sys_package>
         <sys_policy/>
         <sys_scope display_value="HP DaaS Connector">c0288f7fdb4be8d0250ccf5e13961929</sys_scope>
         <sys_update_name>sys_dictionary_x_hpmms_hp_daas_co_hp_outbound_integration_retry_count</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2021-06-15 11:58:20</sys_updated_on>
+        <sys_updated_on>2021-07-16 07:07:14</sys_updated_on>
         <table_reference>false</table_reference>
         <text_index>false</text_index>
         <unique>false</unique>

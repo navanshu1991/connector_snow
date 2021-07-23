@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?><record_update table="sys_auth_profile_basic">
     <sys_auth_profile_basic action="INSERT_OR_UPDATE">
         <name>HP Credentials</name>
-        <password>IlsMi4801PAQYXk1kQfbVQ==</password>
+        <password>z1e+lKMuX7J7MaSa+EyjGA==</password>
         <sys_class_name>sys_auth_profile_basic</sys_class_name>
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2021-07-01 11:31:15</sys_created_on>
         <sys_id>199d7e061bc9701099dc404cbc4bcbb6</sys_id>
-        <sys_mod_count>3</sys_mod_count>
+        <sys_mod_count>4</sys_mod_count>
         <sys_name>HP Credentials</sys_name>
         <sys_package display_value="HP DaaS Connector" source="x_hpmms_hp_daas_co">c0288f7fdb4be8d0250ccf5e13961929</sys_package>
         <sys_policy/>
         <sys_scope display_value="HP DaaS Connector">c0288f7fdb4be8d0250ccf5e13961929</sys_scope>
         <sys_update_name>sys_auth_profile_basic_199d7e061bc9701099dc404cbc4bcbb6</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2021-07-05 15:59:56</sys_updated_on>
-        <username>ace.case.exchange</username>
+        <sys_updated_on>2021-07-20 12:57:59</sys_updated_on>
+        <username>pwc_plugin_user</username>
     </sys_auth_profile_basic>
 </record_update>
