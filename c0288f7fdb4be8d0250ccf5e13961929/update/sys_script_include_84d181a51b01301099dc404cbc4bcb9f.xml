@@ -16,6 +16,7 @@ OutboundIntegration.prototype = {
      * @param {object} input 
      */
     initialize: function(name, input) {
+		this.logger = new Logger('Outbound Integration: ' + name);
         this.name = name;
         this.input = input;
         //Get the integration GlideRecord
@@ -25,7 +26,7 @@ OutboundIntegration.prototype = {
         this.instanceName = this.intgGR.getValue('hp_environment');
         this.type = this.intgGR.getValue('api_type');
         this.condition = this.intgGR.getValue('trigger_condition');
-        this.logger = new Logger('Outbound Integration: ' + name);
+        
         this.utility = new Utility();
     },
 
@@ -268,13 +269,13 @@ OutboundIntegration.prototype = {
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2021-06-29 13:13:24</sys_created_on>
         <sys_id>84d181a51b01301099dc404cbc4bcb9f</sys_id>
-        <sys_mod_count>26</sys_mod_count>
+        <sys_mod_count>31</sys_mod_count>
         <sys_name>OutboundIntegration</sys_name>
         <sys_package display_value="HP DaaS Connector" source="x_hpmms_hp_daas_co">c0288f7fdb4be8d0250ccf5e13961929</sys_package>
         <sys_policy>read</sys_policy>
         <sys_scope display_value="HP DaaS Connector">c0288f7fdb4be8d0250ccf5e13961929</sys_scope>
         <sys_update_name>sys_script_include_84d181a51b01301099dc404cbc4bcb9f</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2021-07-14 09:09:56</sys_updated_on>
+        <sys_updated_on>2021-07-23 13:15:58</sys_updated_on>
     </sys_script_include>
 </record_update>

@@ -5,14 +5,14 @@
         <action_delete>false</action_delete>
         <action_insert>true</action_insert>
         <action_query>false</action_query>
-        <action_update>true</action_update>
+        <action_update>false</action_update>
         <active>true</active>
         <add_message>false</add_message>
         <advanced>true</advanced>
         <change_fields>false</change_fields>
         <client_callable>false</client_callable>
         <collection>sys_attachment</collection>
-        <condition>new Utility().isHPUser(gs.getUserID());</condition>
+        <condition>!(new Utility().isHPUser(gs.getUserID()))</condition>
         <description/>
         <execute_function>false</execute_function>
         <filter_condition/>
@@ -39,7 +39,7 @@
         <sys_domain>global</sys_domain>
         <sys_domain_path>/</sys_domain_path>
         <sys_id>4dec58b81b11701099dc404cbc4bcb54</sys_id>
-        <sys_mod_count>5</sys_mod_count>
+        <sys_mod_count>9</sys_mod_count>
         <sys_name>Send Attachments - Update</sys_name>
         <sys_overrides/>
         <sys_package display_value="HP DaaS Connector" source="x_hpmms_hp_daas_co">c0288f7fdb4be8d0250ccf5e13961929</sys_package>
@@ -47,7 +47,7 @@
         <sys_scope display_value="HP DaaS Connector">c0288f7fdb4be8d0250ccf5e13961929</sys_scope>
         <sys_update_name>sys_script_4dec58b81b11701099dc404cbc4bcb54</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2021-07-20 13:33:49</sys_updated_on>
+        <sys_updated_on>2021-07-23 14:12:06</sys_updated_on>
         <template/>
         <when>after</when>
     </sys_script>

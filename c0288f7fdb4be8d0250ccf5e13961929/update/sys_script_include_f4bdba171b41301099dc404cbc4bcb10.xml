@@ -11,10 +11,10 @@
 Utility.prototype = {
     initialize: function() {
         this.logger = new Logger('Utility');
-		//Attachment Configurations, for update
-		this.ATTACHMENT_CONFIG = [
-			'HP Case Outbound API - Send Attachment: '
-		];
+        //Attachment Configurations, for update
+        this.ATTACHMENT_CONFIG = [
+            'HP Case Outbound API - Send Attachment: '
+        ];
     },
 
     /**
@@ -72,61 +72,62 @@ Utility.prototype = {
             this.logger.error('Error in getAttachmentObject => ' + exception.toString());
         }
     },
-	
-	/**
-	* Function to send attachment updates, there can be multiple outbound configuration set on the same table
-	* Loop through the applicable configurations
-	* @param {object} attachmentGR
-	*/
-	sendAttachmentUpdates: function(attachmentGR) {
-		var names = this.ATTACHMENT_CONFIG;
-		for (var i = 0; i < names.length; i++) {
-			this.sendAttachmentUpdate(attachmentGR, names[i]);
-		}
-	},
+
+    /**
+     * Function to send attachment updates, there can be multiple outbound configuration set on the same table
+     * Loop through the applicable configurations
+     * @param {object} attachmentGR
+     */
+    sendAttachmentUpdates: function(attachmentGR) {
+        var names = this.ATTACHMENT_CONFIG;
+        for (var i = 0; i < names.length; i++) {
+            this.sendAttachmentUpdate(attachmentGR, names[i]);
+        }
+    },
 
     /**
      * Function to send attachment update
      * Check if there is flag enabled in the account configuration for given table
      * If the flag is enabled, ensure that record is found using HP and customer field
-	 * @param {object} attachmentGR
-	 * @param {string} configName 
+     * @param {object} attachmentGR
+     * @param {string} configName 
      */
     sendAttachmentUpdate: function(attachmentGR, configName) {
         try {
+			var tableName = attachmentGR.getValue('table_name');
             //Check if there is a Send Attachment configuration for this table
-			var caseAttachmentConfig = configName + attachmentGR.getValue('table_name');
-			//TBD: If there are multiple Attachment APIs then this will run in a loop
-			
-			var tableGR = new GlideRecord(attachmentGR.getValue('table_name'));
-			tableGR.get(attachmentGR.getValue('table_sys_id'));
-			tableGR.attachmentSysId = attachmentGR.getValue('sys_id');
-			var outBoundIntg = new OutboundIntegration(caseAttachmentConfig, tableGR);
-			if(!outBoundIntg.runCondition()) return; //No need to send attachment
-			
-			//Now that condition matches, we will send this attachment
-			var data = outBoundIntg.generatePayload();
+            var caseAttachmentConfig = configName + tableName;
+            //TBD: If there are multiple Attachment APIs then this will run in a loop
+
+            var tableGR = new GlideRecord(tableName);
+            tableGR.get(attachmentGR.getValue('table_sys_id'));
+            tableGR.attachmentSysId = attachmentGR.getValue('sys_id');
+            var outBoundIntg = new OutboundIntegration(caseAttachmentConfig, tableGR);
+            if (!outBoundIntg.runCondition()) return; //No need to send attachment
+
+            //Now that condition matches, we will send this attachment
+            var data = outBoundIntg.generatePayload();
             if (!data) throw new Error('Error in generating payload for Send Attachment API');
             var response = outBoundIntg.invokeAPI(data);
-			
-			if (response.httpStatus >= 200 && response.httpStatus < 300) {
+
+            if (response.httpStatus >= 200 && response.httpStatus < 300) {
                 gs.addInfoMessage('Attachment was sent to HP successfully!');
             } else {
                 throw new Error(caseAttachmentConfig + ' API returned an error');
             }
-			
+
         } catch (exception) {
             this.logger.error('Error in sendAttachmentUpdate => ' + exception.toString());
         }
     },
-	
-	/**
+
+    /**
      * This function would send the attachments attached to the case in a loop to HP ServiceNow
      * The number of attachments will not exceed 3
      */
     getAttachmentArray: function(tableGR) {
         try {
-			var attachments = [];
+            var attachments = [];
             var attachmentGR = new GlideRecord('sys_attachment');
             attachmentGR.addQuery('table_sys_id', tableGR.getValue('sys_id'));
             attachmentGR.orderByDesc('sys_created_on');
@@ -134,7 +135,7 @@ Utility.prototype = {
             attachmentGR.query();
             while (attachmentGR.next()) {
                 //Adding attachment object to the attachments array
-				var attachmentObj = {};
+                var attachmentObj = {};
                 var glideSysAttachment = new GlideSysAttachment();
                 var base64 = glideSysAttachment.getContentBase64(attachmentGR);
                 attachmentObj.payload = base64;
@@ -142,22 +143,44 @@ Utility.prototype = {
                 attachmentObj.contentType = attachmentGR.getValue('content_type');
                 attachments.push(attachmentObj);
             }
-			return attachments;
+            return attachments;
         } catch (exception) {
             this.logger.error('Error in getAttachmentArray => ' + exception.toString());
             throw exception;
         }
     },
-	
-	/**
-	* Function to check if a given update is made by HP or not
-	* HP User will be updated in a property
-	*/
-	isHPUser: function(sysId) {
-		var propVal = gs.getProperty('');
-		return propVal == sysId;
-	},
 
+    /**
+     * Function to check if a given update is made by HP or not
+     * HP User will be updated in a property
+     */
+    isHPUser: function(sysId) {
+        var propVal = gs.getProperty('');
+        return propVal == sysId;
+    },
+
+    /**
+     * Function to send update only if it is not added by the HP User
+     * Top-most comment will be sent if not added by HP
+     */
+    getLatestComment: function(tableGR, fieldName) {
+        try {
+            var journalGR = new GlideRecord('sys_journal_field');
+            var query = 'element=' + fieldName + '^element_id=' + tableGR.getValue('sys_id') + '^name=' + tableGR.getTableName();
+            journalGR.addEncodedQuery(query);
+            journalGR.orderByDesc('sys_created_on');
+            journalGR.query();
+            if (journalGR.next()) {
+                return journalGR.getValue('value');
+            } else {
+                throw new Error('No valid value for ' + fieldName + ' found');
+            }
+        } catch (exception) {
+			//Exception will be absorbed by GlideEvaluator
+            this.logger.error('Error in getLatestComment => \n' + exception.toString());
+			throw exception;
+        }
+    },
 
     type: 'Utility'
 };]]></script>
@@ -165,13 +188,13 @@ Utility.prototype = {
         <sys_created_by>admin</sys_created_by>
         <sys_created_on>2021-07-05 11:37:49</sys_created_on>
         <sys_id>f4bdba171b41301099dc404cbc4bcb10</sys_id>
-        <sys_mod_count>12</sys_mod_count>
+        <sys_mod_count>15</sys_mod_count>
         <sys_name>Utility</sys_name>
         <sys_package display_value="HP DaaS Connector" source="x_hpmms_hp_daas_co">c0288f7fdb4be8d0250ccf5e13961929</sys_package>
         <sys_policy>read</sys_policy>
         <sys_scope display_value="HP DaaS Connector">c0288f7fdb4be8d0250ccf5e13961929</sys_scope>
         <sys_update_name>sys_script_include_f4bdba171b41301099dc404cbc4bcb10</sys_update_name>
         <sys_updated_by>admin</sys_updated_by>
-        <sys_updated_on>2021-07-20 14:02:48</sys_updated_on>
+        <sys_updated_on>2021-07-23 13:55:34</sys_updated_on>
     </sys_script_include>
 </record_update>

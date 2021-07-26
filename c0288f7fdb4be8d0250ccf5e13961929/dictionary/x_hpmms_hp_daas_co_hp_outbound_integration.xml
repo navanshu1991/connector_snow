@@ -28,7 +28,7 @@
         <element active="false" default="3" label="Retry Count" max_length="40" name="retry_count" type="integer"/>
         <element active="false" label="Retry Wait Time (In milliseconds)" max_length="40" name="retry_wait_time" type="integer"/>
         <element label="Table Name" max_length="80" name="table_name" type="table_name"/>
-        <element attributes="edge_encryption_enabled=true" calculation="(function calculatedFieldValue(current) {&#13;&#10;&#13;&#10;&#9;return current.rest_message.getDisplayValue() + ' - ' + current.rest_method.getDisplayValue() + ': ' + current.table_name.getDisplayValue();&#13;&#10;&#13;&#10;})(current);" display="true" label="Title" mandatory="true" max_length="100" name="title" read_only="true" type="string" unique="true" virtual="true"/>
+        <element attributes="edge_encryption_enabled=true" calculation="(function calculatedFieldValue(current) {&#13;&#10;&#13;&#10;&#9;return current.rest_message.getDisplayValue() + ' - ' + current.rest_method.getDisplayValue() + ': ' + current.table_name.getDisplayValue();&#13;&#10;&#13;&#10;})(current);" display="true" label="Title" mandatory="true" max_length="100" name="title" type="string" unique="true" virtual="true"/>
         <element dependent="table_name" dependent_on_field="table_name" label="Trigger Condition" max_length="4000" name="trigger_condition" type="conditions" use_dependent_field="true"/>
         <index name="index">
             <element name="rest_method"/>
